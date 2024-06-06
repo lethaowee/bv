@@ -1,7 +1,22 @@
 <template>
   <HeaderComponent></HeaderComponent>
-  <div class="container">
-    <div>
+  <div class="container d-flex flex-row">
+    <div class="w-25" style="margin-right: 50px">
+      <div class="w-100" style="margin-bottom: 5px">
+        <input
+          type="radio"
+          class="btn-check"
+          name="btnradio"
+          :id="'btnradio'"
+          autocomplete="off"
+        />
+        <label class="btn btn-outline-primary w-100" for="btnradio"
+          >asdfdas</label
+        >
+      </div>
+    </div>
+
+    <div class="w-100">
       <div class="text-center">
         <h2>Điền các thông tin của tài sản</h2>
       </div>
