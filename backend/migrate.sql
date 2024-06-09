@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS PhieuTaiSan (
     loaiPhieu varchar(255) NOT NULL,
     idTaiSan int NOT NULL,
     idPhongBan int NOT NULL,
-    idPhongBanXuat int NOT NULL,
+    idPhongBanXuat int,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
       ON UPDATE RESTRICT 

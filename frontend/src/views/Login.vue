@@ -53,7 +53,7 @@ const inputFormLogin = ref({
 
 const currentToken = ref({
     token: '',
-    refresh_token: '',
+    id: '',
 })
 
 
@@ -65,6 +65,8 @@ var onLogin = async (e: any) => {
             'password': inputFormLogin.value.password
         });
         cookies.cookies.set("Token", currentToken.value.token);
+        cookies.cookies.set("UserId", currentToken.value.id);
+
         Swal.fire({
             title: 'Success!',
             text: 'Login success.',

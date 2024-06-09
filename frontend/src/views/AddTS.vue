@@ -20,10 +20,11 @@
       <div class="text-center">
         <h2>Điền các thông tin của tài sản</h2>
       </div>
-      <form>
+      <form @submit="onAddingTS">
         <div class="mb-3">
           <label for="exampleInputName" class="form-label">Tên tài sản</label>
           <input
+            v-model="inputTSForm.ten"
             type="text"
             class="form-control"
             id="exampleInputName"
@@ -33,6 +34,7 @@
         <div class="mb-3">
           <label for="exampleInputType" class="form-label">Loại</label>
           <input
+            v-model="inputTSForm.loai"
             type="text                                                                                                                                         "
             class="form-control"
             id="exampleInputType"
@@ -44,6 +46,7 @@
             <label for="pb" class="form-label">Phòng ban trữ tài sản</label>
 
             <select
+              v-model="inputTSForm.idPhongBan"
               id="pb"
               class="form-select form-control"
               aria-label="Default select example"
@@ -57,23 +60,43 @@
 
           <div class="mb-3 w-25">
             <label for="exampleInputDate" class="form-label">Ngày nhập</label>
-            <input type="date" class="form-control" id="exampleInputDate" />
+            <input
+              v-model="inputTSForm.ngayNhap"
+              type="date"
+              class="form-control"
+              id="exampleInputDate"
+            />
           </div>
 
           <div class="mb-3 w-25">
             <label for="exampleInputCount" class="form-label">Số lượng</label>
-            <input type="number" class="form-control" id="exampleInputCount" />
+            <input
+              v-model="inputTSForm.soluong"
+              type="number"
+              class="form-control"
+              id="exampleInputCount"
+            />
           </div>
         </div>
 
         <div class="mb-3">
           <label for="exampleInputStatus" class="form-label">Tình trạng</label>
-          <input type="text" class="form-control" id="exampleInputStatus" />
+          <input
+            v-model="inputTSForm.tinhTrang"
+            type="text"
+            class="form-control"
+            id="exampleInputStatus"
+          />
         </div>
 
         <div class="mb-3">
           <label for="exampleInputStatus" class="form-label">Hình ảnh</label>
-          <input type="file" class="form-control" id="exampleInputStatus" />
+          <input
+            @change="uploadImg($event)"
+            type="file"
+            class="form-control"
+            id="exampleInputStatus"
+          />
         </div>
 
         <!-- <div class="mb-3 form-check">
@@ -89,6 +112,7 @@
 <script setup lang="ts">
 import HeaderComponent from "../components/HeaderComponent.vue";
 import pbServices from "@/services/pb.services";
+import tsServices from "@/services/ts.services";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 
@@ -98,6 +122,55 @@ const pb = ref([
     tenPhongBan: "",
   },
 ]);
+
+const inputTSForm = ref({
+  ten: "",
+  loai: "",
+  ngayNhap: "",
+  soluong: 0,
+  idNguoiDung: 0,
+  idPhongBan: 0,
+  tinhTrang: "",
+  hinhAnh: "",
+});
+
+const toBase64 = (file: any) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+
+async function uploadImg(event: any) {
+  try {
+    let code = await toBase64(event.target.files[0]);
+    inputTSForm.value.hinhAnh = String(code);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+var onAddingTS = async (e: any) => {
+  e.preventDefault();
+  try {
+    await tsServices.create(inputTSForm.value);
+    Swal.fire({
+      title: "Thành công!",
+      text: "Tạo tài sản thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  } catch (err: any) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: err,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    console.log(err);
+  }
+};
 
 onMounted(async () => {
   try {

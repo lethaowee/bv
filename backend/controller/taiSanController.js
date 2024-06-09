@@ -43,13 +43,12 @@ exports.getOneTS = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.username && req.body.password && req.body.password && req.body.password) {
-            username = req.body.username
+        if (req.body && req.body.ten && req.body.loai && req.body.ngayNhap && req.body.soluong && req.body.idNguoiDung && req.body.idPhongBan && req.body.tinhTrang) {
 
             const newTS = {
                 'ten': req.body.ten,
                 'loai': req.body.loai,
-                'ngaynhap': req.body.ngaynhap,
+                'ngayNhap': req.body.ngayNhap,
                 'soluong': req.body.soluong,
                 'idNguoiDung': req.body.idNguoiDung,
                 'idPhongBan': req.body.idPhongBan,
@@ -65,11 +64,27 @@ exports.create = async (req, res) => {
                         status: false
                     });
                 } else
-                    res.status(200).json({
-                        status: true,
-                        title: 'Created Successfully.'
-                    });
-            })
+                    var newPTS = {
+                        'loaiPhieu': 'nhap',
+                        'idTaiSan': row.insertId,
+                        'idPhongBan': req.body.idPhongBan,
+                    }
+
+                connection.query('INSERT INTO phieutaisan SET ?', newPTS, (err, row) => {
+                    if (err) {
+                        console.log(err)
+                        res.status(400).json({
+                            errorMessage: err,
+                            status: false
+                        });
+                    } else
+                        res.status(200).json({
+                            status: true,
+                            title: 'Created Successfully.'
+                        });
+                })
+            }
+            )
         } else {
             res.status(400).json({
                 errorMessage: 'Add proper parameter first!',

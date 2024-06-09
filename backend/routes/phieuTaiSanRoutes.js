@@ -6,10 +6,10 @@ const router = express.Router();
 router
   .route('/')
   .get(ptsController.getAllPTS)
-  // .post(ptsController.createPTS);
+  .post(ptsController.create);
 router
   .route('/:id')
   .get(ptsController.getOnePTS)
-  // .delete(ptsController.deletePTS);
+// .delete(ptsController.deletePTS);
 
 module.exports = router;
