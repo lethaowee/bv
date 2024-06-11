@@ -2,16 +2,39 @@
   <HeaderComponent></HeaderComponent>
   <div class="container d-flex flex-row">
     <div class="w-25" style="margin-right: 50px">
-      <div class="w-100" style="margin-bottom: 5px">
+      <div v-for="(ts, index) in tss" class="w-100" style="margin-bottom: 5px">
         <input
+          :value="index"
+          v-model="choosenTS"
           type="radio"
+          @change="changeChoosen(index)"
           class="btn-check"
-          name="btnradio"
-          :id="'btnradio'"
+          :name="'btnradio'"
+          :id="'btnradio' + ts.id"
           autocomplete="off"
         />
-        <label class="btn btn-outline-primary w-100" for="btnradio"
-          >asdfdas</label
+        <label
+          class="btn btn-outline-primary w-100"
+          :for="'btnradio' + ts.id"
+          >{{ ts.ten }}</label
+        >
+        <input
+          checked
+          v-if="index == tss.length - 1"
+          :value="-1"
+          v-model="choosenTS"
+          type="radio"
+          @change="changeChoosen(index)"
+          class="btn-check"
+          :name="'btnradio'"
+          :id="'btnradio-1'"
+          autocomplete="off"
+        />
+        <label
+          v-if="index == tss.length - 1"
+          class="btn btn-outline-secondary w-100"
+          :for="'btnradio-1'"
+          >+</label
         >
       </div>
     </div>
@@ -97,29 +120,65 @@
             class="form-control"
             id="exampleInputStatus"
           />
+
+          <img
+            class="img-thumbnail"
+            height="300px"
+            width="auto"
+            v-if="inputTSForm.hinhAnh != null && inputTSForm.hinhAnh != ''"
+            :src="inputTSForm.hinhAnh"
+            alt=""
+          />
         </div>
 
         <!-- <div class="mb-3 form-check">
           <input Date="checkbox" class="form-check-input" id="exampleCheck1" />
           <label class="form-check-label" for="exampleCheck1">Check me out</label>
         </div> -->
-        <button type="submit" class="btn btn-primary">Tạo tài sản</button>
+        <button v-if="choosenTS == -1" type="submit" class="btn btn-primary">
+          Thêm tài sản
+        </button>
+        <button v-else type="submit" class="btn btn-primary">
+          Cập nhật tài sản
+        </button>
       </form>
     </div>
   </div>
+  <FooterComponent></FooterComponent>
 </template>
 
 <script setup lang="ts">
 import HeaderComponent from "../components/HeaderComponent.vue";
+import FooterComponent from "@/components/FooterComponent.vue";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
+import { useCookies } from "vue3-cookies";
+
+const cookies = useCookies();
+const tokenBearer = cookies.cookies.get("Token");
+const currentUserId = Number(cookies.cookies.get("UserId"));
+const choosenTS = ref(0);
 
 const pb = ref([
   {
     id: 0,
     tenPhongBan: "",
+  },
+]);
+
+const tss = ref([
+  {
+    id: 0,
+    ten: "",
+    loai: "",
+    ngayNhap: "",
+    soluong: 0,
+    idNguoiDung: 0,
+    idPhongBan: 0,
+    tinhTrang: "",
+    hinhAnh: "",
   },
 ]);
 
@@ -151,16 +210,64 @@ async function uploadImg(event: any) {
   }
 }
 
+function changeChoosen(index: number) {
+  if (choosenTS.value == -1) {
+    inputTSForm.value.ten = "";
+    inputTSForm.value.loai = "";
+    inputTSForm.value.ngayNhap = "";
+    inputTSForm.value.soluong = 0;
+    inputTSForm.value.idNguoiDung = 0;
+    inputTSForm.value.idPhongBan = 0;
+    inputTSForm.value.tinhTrang = "";
+    inputTSForm.value.hinhAnh = "";
+  } else {
+    inputTSForm.value.ten = tss.value[index].ten;
+    inputTSForm.value.loai = tss.value[index].loai;
+    inputTSForm.value.ngayNhap = tss.value[index].ngayNhap;
+    inputTSForm.value.soluong = tss.value[index].soluong;
+    inputTSForm.value.idNguoiDung = tss.value[index].idNguoiDung;
+    inputTSForm.value.idPhongBan = tss.value[index].idPhongBan;
+    inputTSForm.value.tinhTrang = tss.value[index].tinhTrang;
+    inputTSForm.value.hinhAnh = tss.value[index].hinhAnh;
+  }
+}
+
 var onAddingTS = async (e: any) => {
   e.preventDefault();
   try {
-    await tsServices.create(inputTSForm.value);
-    Swal.fire({
-      title: "Thành công!",
-      text: "Tạo tài sản thành công!",
-      icon: "success",
-      confirmButtonText: "OK",
-    });
+    if (choosenTS.value == -1) {
+      inputTSForm.value.idNguoiDung = currentUserId;
+      await tsServices.create(inputTSForm.value);
+    } else
+      await tsServices.update({
+        id: tss.value[choosenTS.value].id,
+        ten: inputTSForm.value.ten,
+        loai: inputTSForm.value.loai,
+        ngayNhap: inputTSForm.value.ngayNhap.slice(0, 10),
+        soluong: inputTSForm.value.soluong,
+        idNguoiDung: inputTSForm.value.idNguoiDung,
+        idPhongBan: inputTSForm.value.idPhongBan,
+        tinhTrang: inputTSForm.value.tinhTrang,
+        hinhAnh: inputTSForm.value.hinhAnh,
+      });
+
+    if (choosenTS.value == -1) {
+      Swal.fire({
+        title: "Thành công!",
+        text: "Tạo tài sản thành công!",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } else {
+      Swal.fire({
+        title: "Thành công!",
+        text: "Cập nhật tài sản thành công!",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    }
+
+    window.location.reload();
   } catch (err: any) {
     Swal.fire({
       title: "Lỗi!",
@@ -176,6 +283,9 @@ onMounted(async () => {
   try {
     let resp = await pbServices.getAll();
     pb.value = resp.data.pb;
+
+    let resp1 = await tsServices.getAll();
+    tss.value = resp1.data.ts;
   } catch (error) {
     Swal.fire({
       title: "Error!",

@@ -9,7 +9,7 @@ class TSService {
   }
   async getAll() {
     try {
-      const ts = await this.api.get("/ts");
+      const ts = await this.api.get("/taisan");
       return ts.data;
     } catch (err) {
       handlingError(err);
@@ -18,7 +18,7 @@ class TSService {
 
   async getOne(id: string) {
     try {
-      const ts = await this.api.get("/ts/" + id);
+      const ts = await this.api.get("/taisan/" + id);
       return ts.data;
     } catch (err) {
       handlingError(err);
@@ -28,6 +28,18 @@ class TSService {
   async create(data: any) {
     try {
       const resp = await this.api.post(
+        "http://localhost:3000/api/taisan",
+        data
+      );
+      return resp.data;
+    } catch (err: any) {
+      handlingError(err);
+    }
+  }
+
+  async update(data: any) {
+    try {
+      const resp = await this.api.patch(
         "http://localhost:3000/api/taisan",
         data
       );

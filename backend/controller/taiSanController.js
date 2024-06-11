@@ -98,3 +98,58 @@ exports.create = async (req, res) => {
         });
     }
 };
+
+exports.update = async (req, res) => {
+    try {
+        if (req.body && req.body.id && req.body.ten && req.body.loai && req.body.ngayNhap && req.body.soluong && req.body.idNguoiDung && req.body.idPhongBan && req.body.tinhTrang) {
+
+            const newTS = {
+                'id': req.body.id,
+                'ten': req.body.ten,
+                'loai': req.body.loai,
+                'ngayNhap': req.body.ngayNhap,
+                'soluong': req.body.soluong,
+                'idNguoiDung': req.body.idNguoiDung,
+                'idPhongBan': req.body.idPhongBan,
+                'tinhTrang': req.body.tinhTrang,
+                'hinhAnh': req.body.hinhAnh,
+            }
+
+            let sql = `UPDATE taisan SET 
+                ten = '${newTS.ten}', 
+                loai = '${newTS.loai}', 
+                ngayNhap = '${newTS.ngayNhap}', 
+                soluong = '${newTS.soluong}', 
+                idNguoiDung = '${newTS.idNguoiDung}', 
+                idPhongBan = '${newTS.idPhongBan}', 
+                tinhTrang = '${newTS.tinhTrang}', 
+                hinhAnh = '${newTS.hinhAnh}' 
+            WHERE id = '${newTS.id}'`
+
+            connection.query(sql, (err, row) => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).json({
+                        errorMessage: err,
+                        status: false
+                    });
+                } else
+                    res.status(200).json({
+                        status: true,
+                        title: 'Update Successfully.'
+                    });
+            }
+            )
+        } else {
+            res.status(400).json({
+                errorMessage: 'Add proper parameter first!',
+                status: false
+            });
+        }
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
+};

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS NguoiDung (
     idPhongBan int,
     FOREIGN KEY (idPhongBan) 
       REFERENCES PhongBan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     maNhanVien varchar(45),
     chucVu varchar(255)
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS PhanHoi (
     idNguoiTao int NOT NULL,
     FOREIGN KEY (idNguoiTao) 
       REFERENCES NguoiDung (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS PhieuTaiSan (
@@ -53,15 +53,15 @@ CREATE TABLE IF NOT EXISTS PhieuTaiSan (
     idPhongBanXuat int,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     FOREIGN KEY (idPhongBan) 
       REFERENCES PhongBan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     FOREIGN KEY (idPhongBanXuat) 
       REFERENCES PhongBan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS CauHinhThongSo (
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS CauHinhThongSo (
     idTaiSan int NOT NULL,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
 
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS ThietBiThayThe (
     daMua boolean NOT NULL,
     FOREIGN KEY (idPhongBan) 
       REFERENCES PhongBan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     hinhAnh LONGTEXT
 );
@@ -99,11 +99,11 @@ CREATE TABLE IF NOT EXISTS ThongBao (
     idNguoiNhan int NOT NULL,
     FOREIGN KEY (idNguoiTao) 
       REFERENCES NguoiDung (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     FOREIGN KEY (idNguoiNhan) 
       REFERENCES NguoiDung (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS HoatDong (
@@ -113,11 +113,11 @@ CREATE TABLE IF NOT EXISTS HoatDong (
     idTaiSan int NOT NULL,
     FOREIGN KEY (idNguoiTao) 
       REFERENCES NguoiDung (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
-      ON UPDATE RESTRICT 
+      ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
 

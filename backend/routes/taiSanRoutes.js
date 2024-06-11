@@ -6,7 +6,8 @@ const router = express.Router();
 router
   .route('/')
   .get(tsController.getAllTS)
-  .post(tsController.create);
+  .post(tsController.create)
+  .patch(tsController.update);
 router
   .route('/:id')
   .get(tsController.getOneTS)

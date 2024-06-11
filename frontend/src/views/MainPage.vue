@@ -442,10 +442,13 @@
       </div>
     </div>
   </div>
+  <FooterComponent></FooterComponent>
 </template>
 
 <script setup lang="ts">
 import HeaderComponent from "../components/HeaderComponent.vue";
+// @ts-ignore
+import FooterComponent from "../components/FooterComponent.vue";
 </script>
 
 <style>
