@@ -6,10 +6,10 @@ const router = express.Router();
 router
   .route('/')
   .get(tbttController.getAllTBTT)
-  // .post(tbttController.createTBTT);
+  .post(tbttController.create);
 router
   .route('/:id')
   .get(tbttController.getOneTBTT)
-  // .delete(tbttController.deleteTBTT);
+// .delete(tbttController.deleteTBTT);
 
 module.exports = router;

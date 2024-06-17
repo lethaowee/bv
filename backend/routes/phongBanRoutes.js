@@ -6,10 +6,10 @@ const router = express.Router();
 router
   .route('/')
   .get(pbController.getAllPB)
-  // .post(pbController.createPB);
+  .post(pbController.create);
 router
   .route('/:id')
   .get(pbController.getOnePB)
-  // .delete(pbController.deletePB);
+// .delete(pbController.deletePB);
 
 module.exports = router;

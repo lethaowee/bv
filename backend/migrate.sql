@@ -4,7 +4,15 @@ CREATE TABLE IF NOT EXISTS PhongBan (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     tenPhongBan varchar(255) NOT NULL
 );
-
+CREATE TABLE IF NOT EXISTS DonViBanHang (
+    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ten varchar(255),
+    maSoThue varchar(255),
+    diaChi varchar(1000),
+    sdt varchar(255),
+    email varchar(255),
+    taiKhoan varchar(1000)
+);
 CREATE TABLE IF NOT EXISTS NguoiDung (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     taiKhoan varchar(255) NOT NULL,

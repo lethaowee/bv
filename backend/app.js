@@ -12,6 +12,7 @@ const pbRoutes = require('./routes/phongBanRoutes');
 const tsRoutes = require('./routes/taiSanRoutes');
 const tbttRoutes = require('./routes/thietBiThayTheRoutes');
 const tbRoutes = require('./routes/thongBaoRoutes');
+const dvbhRoutes = require('./routes/donViBanHangRoutes');
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -24,5 +25,6 @@ app.use('/api/phongban', pbRoutes);
 app.use('/api/taisan', tsRoutes);
 app.use('/api/thietbithaythe', tbttRoutes);
 app.use('/api/thongbao', tbRoutes);
+app.use('/api/donvibanhang', dvbhRoutes);
 
 module.exports = app;

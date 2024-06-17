@@ -32,10 +32,14 @@
         />
         <label
           v-if="index == tss.length - 1"
-          class="btn btn-outline-secondary w-100"
+          style="margin-top: 5px"
+          class="btn btn-outline-danger w-100"
           :for="'btnradio-1'"
           >+</label
         >
+      </div>
+      <div class="text-danger">
+        Lưu ý: Hệ thống tự động tạo phiếu nhập khi thêm tài sản
       </div>
     </div>
 
@@ -152,12 +156,14 @@ import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
+import checkLogin from "@/utilities/utilities";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 
+const router = useRouter();
 const cookies = useCookies();
-const tokenBearer = cookies.cookies.get("Token");
 const currentUserId = Number(cookies.cookies.get("UserId"));
 const choosenTS = ref(0);
 
@@ -281,11 +287,14 @@ var onAddingTS = async (e: any) => {
 
 onMounted(async () => {
   try {
+    if (!checkLogin()) router.push({ name: "login" });
+
     let resp = await pbServices.getAll();
     pb.value = resp.data.pb;
 
     let resp1 = await tsServices.getAll();
     tss.value = resp1.data.ts;
+    
   } catch (error) {
     Swal.fire({
       title: "Error!",

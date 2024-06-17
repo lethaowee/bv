@@ -1,6 +1,6 @@
-exports.getAllCHTS = async (req, res) => {
+exports.getAllDVBH = async (req, res) => {
     try {
-        connection.query('SELECT * FROM cauhinhthongso', (err, rows) => {
+        connection.query('SELECT * FROM donvibanhang', (err, rows) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -8,7 +8,7 @@ exports.getAllCHTS = async (req, res) => {
                 status: 'success',
                 total: rows.length,
                 data: {
-                    chts: rows,
+                    dvbh: rows,
                 },
             });
         });
@@ -19,9 +19,9 @@ exports.getAllCHTS = async (req, res) => {
         });
     }
 };
-exports.getOneCHTS = async (req, res) => {
+exports.getOneDVBH = async (req, res) => {
     try {
-        connection.query('SELECT * FROM cauhinhthongso WHERE id = ?', req.params.id, (err, row) => {
+        connection.query('SELECT * FROM donvibanhang WHERE id = ?', req.params.id, (err, row) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -29,7 +29,7 @@ exports.getOneCHTS = async (req, res) => {
                 status: 'success',
                 total: row.length,
                 data: {
-                    chts: row,
+                    dvbh: row,
                 },
             });
         });
@@ -41,21 +41,21 @@ exports.getOneCHTS = async (req, res) => {
     }
 };
 
+
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.cpu && req.body.ram && req.body.hdd && req.body.ssd && req.body.cardDoHoa && req.body.manHinh && req.body.idTaiSan) {
+        if (req.body && req.body.ten && req.body.maSoThue && req.body.diaChi && req.body.sdt && req.body.email && req.body.taiKhoan) {
 
-            const newCHTS = {
-                'cpu': req.body.cpu,
-                'ram': req.body.ram,
-                'hdd': req.body.hdd,
-                'ssd': req.body.ssd,
-                'cardDoHoa': req.body.cardDoHoa,
-                'manHinh': req.body.manHinh,
-                'idTaiSan': req.body.idTaiSan
+            const newDVBH = {
+                'ten': req.body.ten,
+                'maSoThue': req.body.maSoThue,
+                'diaChi': req.body.diaChi,
+                'sdt': req.body.sdt,
+                'email': req.body.email,
+                'taiKhoan': req.body.taiKhoan,
             }
 
-            connection.query('INSERT INTO cauhinhthongso SET ?', newCHTS, (err, row) => {
+            connection.query('INSERT INTO donvibanhang SET ?', newDVBH, (err, row) => {
                 if (err) {
                     console.log(err)
                     res.status(400).json({

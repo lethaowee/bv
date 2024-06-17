@@ -429,10 +429,10 @@
                     </svg>
                   </div>
                   <div class="solu_title">
-                    <h3>Quản lý thiết bị</h3>
+                    <h3>Quản lý danh mục</h3>
                   </div>
                   <div class="solu_description">
-                    <p>Quản lý tất cả thiết bị có trong hệ thống.</p>
+                    <p>Quản lý tất cả dữ liệu trong hệ thống.</p>
                   </div>
                 </div>
               </a>
@@ -446,9 +446,18 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+import checkLogin from "@/utilities/utilities";
 import HeaderComponent from "../components/HeaderComponent.vue";
 // @ts-ignore
 import FooterComponent from "../components/FooterComponent.vue";
+
+const router = useRouter();
+
+onMounted(() => {
+  if (!checkLogin()) router.push({ name: "login" });
+});
 </script>
 
 <style>
