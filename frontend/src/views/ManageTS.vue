@@ -1,12 +1,9 @@
 <template>
-  <Suspense>
-    <HeaderComponent text-color="white"></HeaderComponent>
-    <template #fallback> </template>
-  </Suspense>
-  <Suspense>
-    <SidebarComponent text-color="white"></SidebarComponent>
-  </Suspense>
-  <div class="d-flex" style="margin: 0; background-color: white">
+  <HeaderComponent></HeaderComponent>
+  <div
+    class="d-flex"
+    style="margin: 0; background-color: white; min-height: 60vh"
+  >
     <nav id="sidebarMenu" style="z-index: 0" class="bg-white sticky-top">
       <div class="position-sticky">
         <div ref="fragment" class="list-group list-group-flush mx-3 mt-4">
@@ -72,8 +69,8 @@
             class="list-group-item list-group-item-action py-2 ripple"
             aria-current="false"
             data-bs-toggle="tab"
-            data-bs-target="#feedback-tab"
-            aria-controls="feedback-tab"
+            data-bs-target="#-tab"
+            aria-controls="-tab"
           >
             <i class="fa-solid fa-comments me-3"></i>
             <span>Thiết bị thay thế</span>
@@ -117,6 +114,13 @@
                 placeholder="Tìm kiếm bằng tên bài viết"
               />
             </div>
+            <button
+              class="btn btn-light w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#addContentSourceModal"
+            >
+              Thêm
+            </button>
             <div class="table-responsive">
               <table class="table table-responsive">
                 <thead>
@@ -421,47 +425,25 @@
         aria-labelledby="feedback-tab-tab"
         style="width: 80vw; margin-top: 30px"
       >
-        <h5>Phản hồi của các thành viên</h5>
+        <h5>Các phòng ban trong hệ thống</h5>
+        <button
+          class="btn btn-light w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#addContentSourceModal"
+        >
+          Thêm
+        </button>
         <table class="table">
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col" style="width: 10%">Ngày tạo</th>
-              <th scope="col" style="width: 15%">Họ và tên</th>
-              <th scope="col">Tiêu đề</th>
-              <th scope="col">Nội dung</th>
+              <th scope="col">Tên</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="feedback in feedbacks" :key="feedback.id">
-              <th scope="row">{{ feedback.id }}</th>
-              <td v-if="feedback.createdAt != ''">
-                {{ feedback.createdAt.slice(0, 10) }}
-              </td>
-              <td class="align-items-center">
-                <img
-                  style="border-radius: 50%; margin-right: 5px"
-                  v-if="feedback.createBy.avatar != null"
-                  :src="
-                    'http://localhost:8080' +
-                    feedback.createBy.avatar.replace('files', '')
-                  "
-                  width="25"
-                  height="25"
-                />
-                <a
-                  class="userNameLink"
-                  :href="
-                    'http://localhost:5173/personal/' + feedback.createBy.id
-                  "
-                  target="_blank"
-                  style="color: black"
-                >
-                  {{ feedback.createBy.fullName }}
-                </a>
-              </td>
-              <td>{{ feedback.title }}</td>
-              <td>{{ feedback.description }}</td>
+            <tr v-for="pb in pbs" :key="pb.id">
+              <th scope="row">{{ pb.id }}</th>
+              <td>{{ pb.tenPhongBan }}</td>
             </tr>
           </tbody>
         </table>
@@ -874,11 +856,12 @@
       </div>
     </div>
   </div>
+  <FooterComponent></FooterComponent>
 </template>
 
 <script setup lang="ts">
 import HeaderComponent from "@/components/HeaderComponent.vue";
-
+import FooterComponent from "@/components/FooterComponent.vue";
 import { ref, onMounted } from "vue";
 import { useCookies } from "vue3-cookies";
 const cookies = useCookies();
@@ -1108,20 +1091,8 @@ function VisibleEL() {
 }
 
 const search = ref("");
-const searchReview = ref("");
 const searchUser = ref("");
 const searchContentSource = ref("");
-
-const reactions = ref({
-  filter: {
-    limit: 0,
-    offset: 0,
-    sortField: "",
-    sortOrder: "",
-  },
-  total: 0,
-  data: {},
-});
 
 const tags = ref([
   {
@@ -1200,42 +1171,6 @@ const eventLogs = ref([
       categoryId: 0,
       createdById: 0,
       contentSourceId: null,
-    },
-  },
-]);
-
-const feedbacks = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    createById: 0,
-    title: "",
-    description: "",
-    isCheck: false,
-    createBy: {
-      id: 0,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null,
-      email: "",
-      username: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      about: "",
-      youtubeLink: "",
-      facebookLink: "",
-      linkedinLink: "",
-      twitterLink: "",
-      totalFollower: 0,
-      totalFollowee: 0,
-      refreshToken: null,
-      phoneNumber: "",
-      birthday: "",
-      avatar: "",
-      role: "",
     },
   },
 ]);
@@ -1349,7 +1284,7 @@ onMounted(async () => {
     nds.value = respNd.data.nd;
 
     let respPb = await pbServices.getAll();
-    pbs.value = respPb.data.pd;
+    pbs.value = respPb.data.pb;
 
     let respDvbh = await dvbhServices.getAll();
     dvbhs.value = respDvbh.data.dvbh;
