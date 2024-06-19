@@ -247,55 +247,53 @@
               Thông tin tất cả phiếu nhập
             </h5>
             <hr />
-            <div class="position-relative">
-              <span class="position-absolute search"
-                ><i class="fa fa-search"></i
-              ></span>
-              <input
-                v-model="searchContentSource"
-                class="form-control form-control-special w-100"
-                placeholder="Tìm kiếm bằng tên nguồn"
-              />
-            </div>
             <div class="table-responsive">
-              <button
-                class="btn btn-light w-100"
-                data-bs-toggle="modal"
-                data-bs-target="#addContentSourceModal"
-              >
-                Thêm
-              </button>
               <table class="table table-responsive">
                 <thead>
                   <tr class="bg-light">
-                    <th scope="col" width="1%">ID</th>
-                    <th scope="col" width="10%">Ngày tạo</th>
-                    <th scope="col" width="69%">Tên</th>
-                    <th scope="col" class="text-end" width="30%">
-                      <span></span>
-                    </th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">ID tài sản</th>
+                    <th scope="col">ID đơn vị bán</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Đơn giá</th>
+                    <th scope="col">Thuế</th>
+                    <th scope="col">Tổng tiền</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(cs, index) in VisibleContentSource()"
-                    :key="cs.id"
-                  >
-                    <td>{{ cs.id }}</td>
-                    <td>{{ cs.createdAt.slice(0, 10) }}</td>
-                    <td class="align-items-center">
-                      <img
-                        style="border-radius: 50%; margin-right: 10px"
-                        v-if="cs.avatar != null"
-                        :src="
-                          'http://localhost:8080' +
-                          cs.avatar.replace('files', '')
-                        "
-                        width="25px"
-                        height="25px"
-                      />{{ cs.name }}
+                  <tr v-for="pn in pns">
+                    <td>{{ pn.ngayTao.slice(0, 10) }}</td>
+                    <td>{{ pn.id }}</td>
+                    <td>{{ pn.idTaiSan }}</td>
+                    <td>{{ pn.idDonViBanHang }}</td>
+                    <td>{{ pn.soLuong }}</td>
+                    <td>
+                      {{
+                        pn.donGia.toLocaleString("it-IT", {
+                          style: "currency",
+                          currency: "VND",
+                        })
+                      }}
                     </td>
-                    <td class="text-end d-flex">
+                    <td>
+                      {{
+                        pn.tienThue.toLocaleString("it-IT", {
+                          style: "currency",
+                          currency: "VND",
+                        })
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        pn.tienThanhToan.toLocaleString("it-IT", {
+                          style: "currency",
+                          currency: "VND",
+                        })
+                      }}
+                    </td>
+
+                    <!-- <td class="text-end d-flex">
                       <button
                         class="btn btn-primary"
                         data-bs-toggle="modal"
@@ -321,17 +319,16 @@
                       >
                         <i class="fa-solid fa-trash"></i>
                       </button>
-                    </td>
+                    </td> -->
                   </tr>
                 </tbody>
               </table>
 
               <div class="text-center">
                 <button
-                  @click="contentSourceVisibles += stepsContentSource"
+                  @click="pnVisibles += stepsPn"
                   v-if="
-                    contentSourceVisibles < contentSources.length &&
-                    searchContentSource == ''
+                    pnVisibles < contentSources.length && searchPhieuNhap == ''
                   "
                   class="btn moreUser"
                   style="border-radius: 50px; border: 2px solid black"
@@ -870,19 +867,28 @@ import { useRouter } from "vue-router";
 import ndServices from "@/services/nd.services";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
-import ptsServices from "@/services/pts.services";
 import tbttServices from "@/services/tbtt.services";
 import dvbhServices from "@/services/dvbh.services";
+import pnServices from "@/services/pn.services";
 
 const router = useRouter();
 
 const pns = ref([
   {
     id: 0,
-    loaiPhieu: "",
     idTaiSan: 0,
-    idPhongBan: 0,
-    idPhongBanXuat: null,
+    idDonViBanHang: 0,
+    donViMua: "",
+    maSoThue: "",
+    diaChi: "",
+    soLuong: 0,
+    donGia: 0,
+    thanhTien: 0,
+    tienThue: 0,
+    tienThanhToan: 0,
+    hinhThucThanhToan: "",
+    donViTienTe: "",
+    ngayTao: "",
   },
 ]);
 const pxs = ref([
@@ -1032,8 +1038,8 @@ var steps = ref(3);
 var userVisibles = ref(10);
 var stepsUser = ref(10);
 
-var contentSourceVisibles = ref(10);
-var stepsContentSource = ref(10);
+var pnVisibles = ref(10);
+var stepsPn = ref(10);
 
 const contentSources = ref([
   {
@@ -1069,19 +1075,17 @@ function VisibleUser() {
   }
 }
 
-function VisibleContentSource() {
-  if (searchContentSource.value != "") {
-    return contentSources.value.filter((cs) => {
-      return (
-        cs.name
-          .toLowerCase()
-          .indexOf(searchContentSource.value.toLowerCase()) != -1
-      );
-    });
-  } else {
-    return contentSources.value.slice(0, contentSourceVisibles.value);
-  }
-}
+// function VisiblePhieuNhap() {
+//   if (searchPhieuNhap.value != "") {
+//     return pns.value.filter((cs) => {
+//       return (
+//         cs.name.toLowerCase().indexOf(searchPhieuNhap.value.toLowerCase()) != -1
+//       );
+//     });
+//   } else {
+//     return pns.value.slice(0, pnVisibles.value);
+//   }
+// }
 
 var elVisibles = ref(20);
 var stepEl = ref(10);
@@ -1092,7 +1096,7 @@ function VisibleEL() {
 
 const search = ref("");
 const searchUser = ref("");
-const searchContentSource = ref("");
+const searchPhieuNhap = ref("");
 
 const tags = ref([
   {
@@ -1177,7 +1181,6 @@ const eventLogs = ref([
 
 const fragment = ref(null as HTMLElement | null);
 // const printFragment = computed(() =>frame.value.print(fragment.value))
-const choosenContentSourceId = ref(0);
 const choosenContentSourceIndex = ref(0);
 
 async function deleteContentSource() {
@@ -1292,12 +1295,11 @@ onMounted(async () => {
     let respTs = await tsServices.getAll();
     tss.value = respTs.data.ts;
 
-    let respPts = await ptsServices.getAll();
-    pns.value = respPts.data.pts;
-    pxs.value = respPts.data.pts;
-
     let respTbtt = await tbttServices.getAll();
     tbtt.value = respTbtt.data.tbtt;
+
+    let respPn = await pnServices.getAll();
+    pns.value = respPn.data.pn;
 
     // eventlog
   } catch (err) {

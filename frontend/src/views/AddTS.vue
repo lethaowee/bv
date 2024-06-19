@@ -18,26 +18,24 @@
           :for="'btnradio' + ts.id"
           >{{ ts.ten }}</label
         >
-        <input
-          checked
-          v-if="index == tss.length - 1"
-          :value="-1"
-          v-model="choosenTS"
-          type="radio"
-          @change="changeChoosen(index)"
-          class="btn-check"
-          :name="'btnradio'"
-          :id="'btnradio-1'"
-          autocomplete="off"
-        />
-        <label
-          v-if="index == tss.length - 1"
-          style="margin-top: 5px"
-          class="btn btn-outline-danger w-100"
-          :for="'btnradio-1'"
-          >+</label
-        >
       </div>
+      <input
+        checked
+        :value="-1"
+        v-model="choosenTS"
+        @change="changeChoosen(-1)"
+        type="radio"
+        class="btn-check"
+        :name="'btnradio'"
+        :id="'btnradio-1'"
+        autocomplete="off"
+      />
+      <label
+        style="margin-top: 5px"
+        class="btn btn-outline-danger w-100"
+        :for="'btnradio-1'"
+        >+</label
+      >
       <div class="text-danger">
         Lưu ý: Hệ thống tự động tạo phiếu nhập khi thêm tài sản
       </div>
@@ -45,7 +43,7 @@
 
     <div class="w-100">
       <div class="text-center">
-        <h2>Điền các thông tin của tài sản</h2>
+        <h3>Điền các thông tin của tài sản</h3>
       </div>
       <form @submit="onAddingTS">
         <div class="mb-3">
@@ -58,33 +56,8 @@
             aria-describedby="emailHelp"
           />
         </div>
-        <div class="mb-3">
-          <label for="exampleInputType" class="form-label">Loại</label>
-          <input
-            v-model="inputTSForm.loai"
-            type="text                                                                                                                                         "
-            class="form-control"
-            id="exampleInputType"
-          />
-        </div>
 
-        <div class="d-flex">
-          <div class="mb-3 w-75">
-            <label for="pb" class="form-label">Phòng ban trữ tài sản</label>
-
-            <select
-              v-model="inputTSForm.idPhongBan"
-              id="pb"
-              class="form-select form-control"
-              aria-label="Default select example"
-              aria-placeholder=""
-            >
-              <option v-for="room in pb" :value="room.id">
-                {{ room.tenPhongBan }}
-              </option>
-            </select>
-          </div>
-
+        <div class="d-flex d-flex justify-content-between">
           <div class="mb-3 w-25">
             <label for="exampleInputDate" class="form-label">Ngày nhập</label>
             <input
@@ -96,8 +69,19 @@
           </div>
 
           <div class="mb-3 w-25">
+            <label for="exampleInputHSD" class="form-label">Hạn sử dụng</label>
+            <input
+              v-model="inputTSForm.hsd"
+              type="date"
+              class="form-control"
+              id="exampleInputHSD"
+            />
+          </div>
+
+          <div class="mb-3 w-25">
             <label for="exampleInputCount" class="form-label">Số lượng</label>
             <input
+              @change="calculatePrice()"
               v-model="inputTSForm.soluong"
               type="number"
               class="form-control"
@@ -107,22 +91,45 @@
         </div>
 
         <div class="mb-3">
-          <label for="exampleInputStatus" class="form-label">Tình trạng</label>
+          <label for="exampleInputNum" class="form-label">Số lô</label>
           <input
-            v-model="inputTSForm.tinhTrang"
+            v-model="inputTSForm.soLo"
             type="text"
             class="form-control"
-            id="exampleInputStatus"
+            id="exampleInputNum"
           />
         </div>
 
+        <div class="d-flex">
+          <div class="mb-3 w-50">
+            <label for="exampleInputPrice" class="form-label">Đơn giá</label>
+            <input
+              @change="calculatePrice()"
+              v-model="inputTSForm.donGia"
+              type="text"
+              class="form-control"
+              id="exampleInputPrice"
+            />
+          </div>
+
+          <div class="mb-3 w-50">
+            <label for="exampleInputCal" class="form-label">Đơn vị tính</label>
+            <input
+              v-model="inputTSForm.donViTinh"
+              type="text"
+              class="form-control"
+              id="exampleInputCal"
+            />
+          </div>
+        </div>
+
         <div class="mb-3">
-          <label for="exampleInputStatus" class="form-label">Hình ảnh</label>
+          <label for="exampleInputImage" class="form-label">Hình ảnh</label>
           <input
             @change="uploadImg($event)"
             type="file"
             class="form-control"
-            id="exampleInputStatus"
+            id="exampleInputImage"
           />
 
           <img
@@ -135,16 +142,122 @@
           />
         </div>
 
-        <!-- <div class="mb-3 form-check">
-          <input Date="checkbox" class="form-check-input" id="exampleCheck1" />
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div> -->
-        <button v-if="choosenTS == -1" type="submit" class="btn btn-primary">
-          Thêm tài sản
-        </button>
-        <button v-else type="submit" class="btn btn-primary">
-          Cập nhật tài sản
-        </button>
+        <div class="text-center">
+          <h3>Điền các thông tin của phiếu nhập tài sản</h3>
+        </div>
+
+        <div class="d-flex">
+          <div class="mb-3 w-100">
+            <label for="pb" class="form-label">Đơn vị bán hàng</label>
+
+            <select
+              v-model="inputTSForm.idDonViBanHang"
+              id="pb"
+              class="form-select form-control"
+              aria-label="Default select example"
+              aria-placeholder=""
+            >
+              <option v-for="dvbh in dvbhs" :value="dvbh.id">
+                {{ dvbh.ten }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-flex">
+          <div class="mb-3 w-50">
+            <label for="exampleInputPriceWay" class="form-label"
+              >Đơn vị mua</label
+            >
+            <input
+              v-model="inputTSForm.donViMua"
+              type="text"
+              class="form-control"
+              id="exampleInputPriceWay"
+            />
+          </div>
+
+          <div class="mb-3 w-25">
+            <label for="exampleInputTax" class="form-label">Mã số thuế</label>
+            <input
+              v-model="inputTSForm.maSoThue"
+              type="text"
+              class="form-control"
+              id="exampleInputTax"
+            />
+          </div>
+          <div class="mb-3 w-25">
+            <label for="exampleInputAddress" class="form-label">Địa chỉ</label>
+            <input
+              v-model="inputTSForm.diaChi"
+              type="text"
+              class="form-control"
+              id="exampleInputAddress"
+            />
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="mb-3 w-50">
+            <label for="exampleInputWay" class="form-label"
+              >Hình thức thanh toán</label
+            >
+            <input
+              v-model="inputTSForm.hinhThucThanhToan"
+              type="text"
+              class="form-control"
+              id="exampleInputWay"
+            />
+          </div>
+
+          <div class="mb-3 w-50">
+            <label for="exampleInputUnit" class="form-label"
+              >Đơn vị tiền tệ</label
+            >
+            <input
+              v-model="inputTSForm.donViTienTe"
+              type="text"
+              class="form-control"
+              id="exampleInputUnit"
+            />
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="fw-bold">
+            Thành tiền = Số lượng x Đơn giá =
+            {{
+              inputTSForm.thanhTien.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })
+            }}
+          </div>
+          <div class="fw-bold">
+            Thuế = 5% x Thành tiền =
+            {{
+              inputTSForm.tienThue.toLocaleString("it-IT", {
+                style: "currency",
+                currency: "VND",
+              })
+            }}
+          </div>
+          <div class="fw-bold">
+            Tổng tiền thanh toán = Thuế + Thành tiền =
+            <span class="text-danger">
+              {{
+                inputTSForm.tienThanhToan.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })
+              }}
+            </span>
+          </div>
+          <button v-if="choosenTS == -1" type="submit" class="btn btn-primary">
+            Thêm tài sản
+          </button>
+          <button v-else type="submit" class="btn btn-primary mt-3">
+            Cập nhật tài sản
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -154,6 +267,7 @@
 <script setup lang="ts">
 import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
+import dvbhServices from "@/services/dvbh.services";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
 import checkLogin from "@/utilities/utilities";
@@ -165,7 +279,7 @@ import { useCookies } from "vue3-cookies";
 const router = useRouter();
 const cookies = useCookies();
 const currentUserId = Number(cookies.cookies.get("UserId"));
-const choosenTS = ref(0);
+const choosenTS = ref(-1);
 
 const pb = ref([
   {
@@ -178,25 +292,45 @@ const tss = ref([
   {
     id: 0,
     ten: "",
-    loai: "",
     ngayNhap: "",
+    hsd: "",
     soluong: 0,
-    idNguoiDung: 0,
-    idPhongBan: 0,
-    tinhTrang: "",
+    soLo: "",
+    donGia: 0,
+    donViTinh: "",
     hinhAnh: "",
+  },
+]);
+const dvbhs = ref([
+  {
+    id: 0,
+    ten: "",
+    maSoThue: "",
+    diaChi: "",
+    sdt: "",
+    email: "",
+    taiKhoan: "",
   },
 ]);
 
 const inputTSForm = ref({
   ten: "",
-  loai: "",
   ngayNhap: "",
+  hsd: "",
   soluong: 0,
-  idNguoiDung: 0,
-  idPhongBan: 0,
-  tinhTrang: "",
+  soLo: "",
+  donGia: 0,
+  donViTinh: "",
   hinhAnh: "",
+  idDonViBanHang: 0,
+  donViMua: "",
+  maSoThue: "",
+  diaChi: "",
+  thanhTien: 0,
+  tienThue: 0,
+  tienThanhToan: 0,
+  hinhThucThanhToan: "",
+  donViTienTe: "",
 });
 
 const toBase64 = (file: any) =>
@@ -216,24 +350,32 @@ async function uploadImg(event: any) {
   }
 }
 
+function calculatePrice() {
+  inputTSForm.value.thanhTien =
+    inputTSForm.value.donGia * inputTSForm.value.soluong;
+  inputTSForm.value.tienThue = inputTSForm.value.thanhTien * 0.05;
+  inputTSForm.value.tienThanhToan =
+    inputTSForm.value.thanhTien + inputTSForm.value.tienThue;
+}
+
 function changeChoosen(index: number) {
   if (choosenTS.value == -1) {
     inputTSForm.value.ten = "";
-    inputTSForm.value.loai = "";
     inputTSForm.value.ngayNhap = "";
+    inputTSForm.value.hsd = "";
     inputTSForm.value.soluong = 0;
-    inputTSForm.value.idNguoiDung = 0;
-    inputTSForm.value.idPhongBan = 0;
-    inputTSForm.value.tinhTrang = "";
+    inputTSForm.value.soLo = "";
+    inputTSForm.value.donGia = 0;
+    inputTSForm.value.donViTinh = "";
     inputTSForm.value.hinhAnh = "";
   } else {
     inputTSForm.value.ten = tss.value[index].ten;
-    inputTSForm.value.loai = tss.value[index].loai;
     inputTSForm.value.ngayNhap = tss.value[index].ngayNhap;
+    inputTSForm.value.hsd = tss.value[index].hsd;
     inputTSForm.value.soluong = tss.value[index].soluong;
-    inputTSForm.value.idNguoiDung = tss.value[index].idNguoiDung;
-    inputTSForm.value.idPhongBan = tss.value[index].idPhongBan;
-    inputTSForm.value.tinhTrang = tss.value[index].tinhTrang;
+    inputTSForm.value.soLo = tss.value[index].soLo;
+    inputTSForm.value.donGia = tss.value[index].donGia;
+    inputTSForm.value.donViTinh = tss.value[index].donViTinh;
     inputTSForm.value.hinhAnh = tss.value[index].hinhAnh;
   }
 }
@@ -242,18 +384,13 @@ var onAddingTS = async (e: any) => {
   e.preventDefault();
   try {
     if (choosenTS.value == -1) {
-      inputTSForm.value.idNguoiDung = currentUserId;
       await tsServices.create(inputTSForm.value);
     } else
       await tsServices.update({
         id: tss.value[choosenTS.value].id,
         ten: inputTSForm.value.ten,
-        loai: inputTSForm.value.loai,
         ngayNhap: inputTSForm.value.ngayNhap.slice(0, 10),
         soluong: inputTSForm.value.soluong,
-        idNguoiDung: inputTSForm.value.idNguoiDung,
-        idPhongBan: inputTSForm.value.idPhongBan,
-        tinhTrang: inputTSForm.value.tinhTrang,
         hinhAnh: inputTSForm.value.hinhAnh,
       });
 
@@ -294,7 +431,16 @@ onMounted(async () => {
 
     let resp1 = await tsServices.getAll();
     tss.value = resp1.data.ts;
-    
+
+    let resp2 = await dvbhServices.getAll();
+    dvbhs.value = resp2.data.dvbh;
+
+    inputTSForm.value.donViMua = "Bệnh Viện Đa Khoa Tỉnh Sóc Trăng";
+    inputTSForm.value.maSoThue = "2200176300";
+    inputTSForm.value.diaChi =
+      "378 đường Lê Duẩn, Phường 9, TP. Sóc Trăng, T. Sóc Trăng";
+    inputTSForm.value.hinhThucThanhToan = "TM/CK";
+    inputTSForm.value.donViTienTe = "VND";
   } catch (error) {
     Swal.fire({
       title: "Error!",

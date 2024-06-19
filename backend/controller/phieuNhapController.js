@@ -1,6 +1,6 @@
-exports.getAllPTS = async (req, res) => {
+exports.getAllPN = async (req, res) => {
     try {
-        connection.query('SELECT * FROM phieutaisan', (err, rows) => {
+        connection.query('SELECT * FROM phieunhap ORDER BY ngayTao DESC', (err, rows) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -8,7 +8,7 @@ exports.getAllPTS = async (req, res) => {
                 status: 'success',
                 total: rows.length,
                 data: {
-                    pts: rows,
+                    pn: rows,
                 },
             });
         });
@@ -19,9 +19,9 @@ exports.getAllPTS = async (req, res) => {
         });
     }
 };
-exports.getOnePTS = async (req, res) => {
+exports.getOnePN = async (req, res) => {
     try {
-        connection.query('SELECT * FROM phieutaisan WHERE id = ?', req.params.id, (err, row) => {
+        connection.query('SELECT * FROM phieunhap WHERE id = ?', req.params.id, (err, row) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -29,7 +29,7 @@ exports.getOnePTS = async (req, res) => {
                 status: 'success',
                 total: row.length,
                 data: {
-                    pts: row,
+                    pn: row,
                 },
             });
         });
@@ -43,16 +43,25 @@ exports.getOnePTS = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.loaiPhieu && req.body.idTaiSan && req.body.idPhongBan && req.body.idPhongBanXuat) {
+        if (req.body && req.body.idTaiSan && req.body.idDonViBanHang && req.body.donViMua && req.body.maSoThue && req.body.diaChi && req.body.soLuong && req.body.donGia && req.body.thanhTien && req.body.tienThue && req.body.tienThanhToan && req.body.hinhThucThanhToan && req.body.donViTienTe && req.body.ngayTao) {
 
-            const newPTS = {
-                'loaiPhieu': req.body.ten,
-                'idTaiSan': req.body.loai,
-                'idPhongBan': req.body.ngayNhap,
-                'idPhongBanXuat': req.body.soluong,
+            const newPN = {
+                'idTaiSan': req.body.idTaiSan,
+                'idDonViBanHang': req.body.idDonViBanHang,
+                'donViMua': req.body.donViMua,
+                'maSoThue': req.body.maSoThue,
+                'diaChi': req.body.diaChi,
+                'soLuong': req.body.soLuong,
+                'donGia': req.body.donGia,
+                'thanhTien': req.body.thanhTien,
+                'tienThue': req.body.tienThue,
+                'tienThanhToan': req.body.tienThanhToan,
+                'hinhThucThanhToan': req.body.hinhThucThanhToan,
+                'donViTienTe': req.body.donViTienTe,
+                'ngayTao': req.body.ngayTao
             }
 
-            connection.query('INSERT INTO phieutaisan SET ?', newPTS, (err, row) => {
+            connection.query('INSERT INTO phieunhap SET ?', newPN, (err, row) => {
                 if (err) {
                     console.log(err)
                     res.status(400).json({

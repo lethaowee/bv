@@ -43,16 +43,16 @@ exports.getOneTS = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.ten && req.body.loai && req.body.ngayNhap && req.body.soluong && req.body.idNguoiDung && req.body.idPhongBan && req.body.tinhTrang) {
+        if (req.body && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh) {
 
             const newTS = {
                 'ten': req.body.ten,
-                'loai': req.body.loai,
                 'ngayNhap': req.body.ngayNhap,
+                'hsd': req.body.hsd,
                 'soluong': req.body.soluong,
-                'idNguoiDung': req.body.idNguoiDung,
-                'idPhongBan': req.body.idPhongBan,
-                'tinhTrang': req.body.tinhTrang,
+                'soLo': req.body.soLo,
+                'donGia': req.body.donGia,
+                'donViTinh': req.body.donViTinh,
                 'hinhAnh': req.body.hinhAnh,
             }
 
@@ -64,13 +64,23 @@ exports.create = async (req, res) => {
                         status: false
                     });
                 } else
-                    var newPTS = {
-                        'loaiPhieu': 'nhap',
+                    var newPN = {
                         'idTaiSan': row.insertId,
-                        'idPhongBan': req.body.idPhongBan,
+                        'idDonViBanHang': req.body.idDonViBanHang,
+                        'donViMua': req.body.donViMua,
+                        'maSoThue': req.body.maSoThue,
+                        'diaChi': req.body.diaChi,
+                        'soLuong': req.body.soluong,
+                        'donGia': req.body.donGia,
+                        'thanhTien': req.body.thanhTien,
+                        'tienThue': req.body.tienThue,
+                        'tienThanhToan': req.body.tienThanhToan,
+                        'hinhThucThanhToan': req.body.hinhThucThanhToan,
+                        'donViTienTe': req.body.donViTienTe,
+                        'ngayTao': req.body.ngayNhap
                     }
 
-                connection.query('INSERT INTO phieutaisan SET ?', newPTS, (err, row) => {
+                connection.query('INSERT INTO phieunhap SET ?', newPN, (err, row) => {
                     if (err) {
                         console.log(err)
                         res.status(400).json({

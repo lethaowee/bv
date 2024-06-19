@@ -35,12 +35,12 @@ CREATE TABLE IF NOT EXISTS NguoiDung (
 CREATE TABLE IF NOT EXISTS TaiSan (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     ten varchar(255) NOT NULL,
-    loai varchar(255) NOT NULL,
+    soLo varchar(255) NOT NULL,
     ngayNhap date NOT NULL,
+    hsd date not null,
+    donViTinh varchar(255) NOT NULL
     soluong int NOT NULL,
-    idNguoiDung int NOT NULL,
-    idPhongBan int NOT NULL,
-    tinhTrang varchar(255) NOT NULL,
+    donGia int not null,
     hinhAnh LONGTEXT NOT NULL
 );
 
@@ -53,25 +53,49 @@ CREATE TABLE IF NOT EXISTS PhanHoi (
       ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS PhieuTaiSan (
+CREATE TABLE IF NOT EXISTS PhieuNhap (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    loaiPhieu varchar(255) NOT NULL,
     idTaiSan int NOT NULL,
-    idPhongBan int NOT NULL,
-    idPhongBanXuat int,
+    idDonViBanHang int NOT NULL,
+    ngayTao date not null,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
       ON UPDATE CASCADE 
       ON DELETE CASCADE,
-    FOREIGN KEY (idPhongBan) 
-      REFERENCES PhongBan (id) 
+    FOREIGN KEY (idDonViBanHang) 
+      REFERENCES DonViBanHang (id) 
       ON UPDATE CASCADE 
       ON DELETE CASCADE,
-    FOREIGN KEY (idPhongBanXuat) 
-      REFERENCES PhongBan (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE
+    donViMua varchar(255),
+    maSoThue varchar(255),
+    diaChi varchar(255),
+    soLuong int not null,
+    donGia FLOAT not null,
+    thanhTien FLOAT not null,
+    tienThue FLOAT not null,
+    tienThanhToan FLOAT  not null,
+    hinhThucThanhToan varchar(255) not null,
+    donViTienTe varchar(255) not null
 );
+-- CREATE TABLE IF NOT EXISTS PhieuTaiSan (
+--     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+--     loaiPhieu varchar(255) NOT NULL,
+--     idTaiSan int NOT NULL,
+--     idPhongBan int NOT NULL,
+--     idPhongBanXuat int,
+--     FOREIGN KEY (idTaiSan) 
+--       REFERENCES TaiSan (id) 
+--       ON UPDATE CASCADE 
+--       ON DELETE CASCADE,
+--     FOREIGN KEY (idPhongBan) 
+--       REFERENCES PhongBan (id) 
+--       ON UPDATE CASCADE 
+--       ON DELETE CASCADE,
+--     FOREIGN KEY (idPhongBanXuat) 
+--       REFERENCES PhongBan (id) 
+--       ON UPDATE CASCADE 
+--       ON DELETE CASCADE
+-- );
 CREATE TABLE IF NOT EXISTS CauHinhThongSo (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     cpu varchar(255),
