@@ -77,6 +77,22 @@ CREATE TABLE IF NOT EXISTS PhieuXuat (
       ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS PhieuSua (
+    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ngayTao date not null,
+    idTaiSan int NOT NULL,
+    idPhongBan int NOT NULL,
+    tinhTrang varchar(255) NOT NULL,
+    FOREIGN KEY (idTaiSan) 
+      REFERENCES TaiSan (id) 
+      ON UPDATE CASCADE 
+      ON DELETE CASCADE,
+    FOREIGN KEY (idPhongBan) 
+      REFERENCES PhongBan (id) 
+      ON UPDATE CASCADE 
+      ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS PhieuNhap (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     idTaiSan int NOT NULL,
