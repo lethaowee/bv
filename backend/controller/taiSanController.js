@@ -19,6 +19,7 @@ exports.getAllTS = async (req, res) => {
         });
     }
 };
+
 exports.getOneTS = async (req, res) => {
     try {
         connection.query('SELECT * FROM taisan WHERE id = ?', req.params.id, (err, row) => {
@@ -43,7 +44,7 @@ exports.getOneTS = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh) {
+        if (req.body && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan) {
 
             const newTS = {
                 'ten': req.body.ten,
@@ -54,6 +55,7 @@ exports.create = async (req, res) => {
                 'donGia': req.body.donGia,
                 'donViTinh': req.body.donViTinh,
                 'hinhAnh': req.body.hinhAnh,
+                'idLoaiTaiSan': req.body.idLoaiTaiSan
             }
 
             connection.query('INSERT INTO taisan SET ?', newTS, (err, row) => {
@@ -123,6 +125,7 @@ exports.update = async (req, res) => {
                 'idPhongBan': req.body.idPhongBan,
                 'tinhTrang': req.body.tinhTrang,
                 'hinhAnh': req.body.hinhAnh,
+                'idLoaiTaiSan': req.body.idLoaiTaiSan
             }
 
             let sql = `UPDATE taisan SET 
@@ -133,7 +136,8 @@ exports.update = async (req, res) => {
                 idNguoiDung = '${newTS.idNguoiDung}', 
                 idPhongBan = '${newTS.idPhongBan}', 
                 tinhTrang = '${newTS.tinhTrang}', 
-                hinhAnh = '${newTS.hinhAnh}' 
+                hinhAnh = '${newTS.hinhAnh}',
+                idLoaiTaiSan = '${newTS.idLoaiTaiSan}',
             WHERE id = '${newTS.id}'`
 
             connection.query(sql, (err, row) => {
@@ -156,6 +160,29 @@ exports.update = async (req, res) => {
                 status: false
             });
         }
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
+};
+exports.delete = async (req, res) => {
+    try {
+        connection.query("DELETE FROM taisan WHERE id = ", req.params.id, (err, row) => {
+            if (err) {
+                console.log(err)
+                res.status(400).json({
+                    errorMessage: err,
+                    status: false
+                });
+            } else
+                res.status(200).json({
+                    status: true,
+                    title: 'Delete Successfully.'
+                });
+        }
+        )
     } catch (err) {
         res.status(404).json({
             status: 'fail',

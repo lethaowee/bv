@@ -17,7 +17,7 @@
                       type="text"
                       id="typeEmailX"
                       class="form-control form-control-lg input-login"
-                      placeholder="Username"
+                      placeholder="Tài khoản"
                       required
                     />
 
@@ -26,7 +26,7 @@
                       type="password"
                       id="typePasswordX"
                       class="form-control form-control-lg input-login"
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                       required
                     />
 
@@ -34,18 +34,18 @@
                       type="submit"
                       class="btn btn-outline-light btn-lg px-5 input-login"
                     >
-                      Login
+                      Đăng nhập
                     </button>
                   </form>
                 </div>
 
                 <div>
                   <p class="mb-0">
-                    Don't have an account?
+                    Chưa có tài khoản?
                     <a
                       href="http://localhost:5173/signup"
                       class="text-white-50 fw-bold"
-                      >Sign Up</a
+                      >Đăng ký</a
                     >
                   </p>
                 </div>

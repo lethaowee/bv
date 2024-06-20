@@ -11,6 +11,6 @@ router
 router
   .route('/:id')
   .get(tsController.getOneTS)
-// .delete(tsController.deleteTS);
+  .delete(tsController.delete);
 
 module.exports = router;

@@ -10,6 +10,6 @@ router
 router
   .route('/:id')
   .get(pbController.getOnePB)
-// .delete(pbController.deletePB);
+  .delete(pbController.delete);
 
 module.exports = router;

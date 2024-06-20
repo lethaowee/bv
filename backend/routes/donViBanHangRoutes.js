@@ -10,6 +10,6 @@ router
 router
     .route('/:id')
     .get(dvbhController.getOneDVBH)
-// .delete(chtsController.deleteCHTS);
+    .delete(dvbhController.delete);
 
 module.exports = router;

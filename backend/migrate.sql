@@ -24,16 +24,14 @@ CREATE TABLE IF NOT EXISTS NguoiDung (
     avatar LONGTEXT,
     vaiTro varchar(255) NOT NULL,
     idPhongBan int,
-    FOREIGN KEY (idPhongBan) 
-      REFERENCES PhongBan (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE,
+    
     maNhanVien varchar(45),
     chucVu varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS TaiSan (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    idLoaiTaiSan int not null,
     ten varchar(255) NOT NULL,
     soLo varchar(255) NOT NULL,
     ngayNhap date NOT NULL,
@@ -42,6 +40,10 @@ CREATE TABLE IF NOT EXISTS TaiSan (
     soluong int NOT NULL,
     donGia int not null,
     hinhAnh LONGTEXT NOT NULL
+     FOREIGN KEY (idLoaiTaiSan) 
+      REFERENCES LoaiTaiSan (id) 
+      ON UPDATE CASCADE 
+      ON DELETE CASCADE,
 );
 
 CREATE TABLE IF NOT EXISTS PhanHoi (
@@ -53,6 +55,12 @@ CREATE TABLE IF NOT EXISTS PhanHoi (
       ON UPDATE CASCADE 
       ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS LoaiTaiSan (
+    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ten varchar(255) not null
+);
+
 CREATE TABLE IF NOT EXISTS PhieuNhap (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     idTaiSan int NOT NULL,

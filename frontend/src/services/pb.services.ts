@@ -24,14 +24,20 @@ class PBService {
       handlingError(err);
     }
   }
-  async create(data: any) {
+  async create(ten: string) {
     try {
-      const resp = await this.api.post(
-        "http://localhost:3000/api/phongban",
-        data
-      );
+      const resp = await this.api.post("http://localhost:3000/api/phongban", {
+        tenPhongBan: ten,
+      });
       return resp.data;
     } catch (err: any) {
+      handlingError(err);
+    }
+  }
+  async delete(id: number) {
+    try {
+      return await this.api.delete("/phongban/" + id);
+    } catch (err) {
       handlingError(err);
     }
   }

@@ -1,6 +1,6 @@
-exports.getAllPB = async (req, res) => {
+exports.getAllLTS = async (req, res) => {
     try {
-        connection.query('SELECT * FROM phongban', (err, rows) => {
+        connection.query('SELECT * FROM loaitaisan', (err, rows) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -8,7 +8,7 @@ exports.getAllPB = async (req, res) => {
                 status: 'success',
                 total: rows.length,
                 data: {
-                    pb: rows,
+                    lts: rows,
                 },
             });
         });
@@ -19,9 +19,9 @@ exports.getAllPB = async (req, res) => {
         });
     }
 };
-exports.getOnePB = async (req, res) => {
+exports.getOneLTS = async (req, res) => {
     try {
-        connection.query('SELECT * FROM phongban WHERE id = ?', req.params.id, (err, row) => {
+        connection.query('SELECT * FROM loaitaisan WHERE id = ?', req.params.id, (err, row) => {
             if (err) throw err;
 
             console.log('Data received from Db:');
@@ -29,7 +29,7 @@ exports.getOnePB = async (req, res) => {
                 status: 'success',
                 total: row.length,
                 data: {
-                    pb: row,
+                    lts: row,
                 },
             });
         });
@@ -40,15 +40,17 @@ exports.getOnePB = async (req, res) => {
         });
     }
 };
+
+
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.tenPhongBan) {
+        if (req.body && req.body.ten) {
 
-            const newPB = {
-                'tenPhongBan': req.body.tenPhongBan
+            const newLTS = {
+                'ten': req.body.ten,
             }
 
-            connection.query('INSERT INTO phongban SET ?', newPB, (err, row) => {
+            connection.query('INSERT INTO loaitaisan SET ?', newLTS, (err, row) => {
                 if (err) {
                     console.log(err)
                     res.status(400).json({
@@ -78,7 +80,7 @@ exports.create = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        connection.query("DELETE FROM phongban WHERE id = ?", req.params.id, (err, row) => {
+        connection.query("DELETE FROM loaitaisan WHERE id = ?", req.params.id, (err, row) => {
             if (err) {
                 console.log(err)
                 res.status(400).json({

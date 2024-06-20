@@ -15,7 +15,7 @@
             data-bs-target="#post"
             aria-controls="post"
           >
-            <i class="fa-solid fa-newspaper fa-fw me-3"></i>
+            <i class="fa-solid fa-building fa-fw me-3"></i>
             <span>Đơn vị bán hàng</span>
           </a>
 
@@ -38,7 +38,7 @@
             data-bs-target="#contentSource"
             aria-controls="contentSource"
           >
-            <i class="fa-solid fa-people-group fa-fw me-3"></i>
+            <i class="fa-solid fa-indent fa-fw me-3"></i>
             <span>Phiếu nhập</span>
           </a>
           <a
@@ -49,7 +49,7 @@
             data-bs-target="#eventLog"
             aria-controls="eventLog"
           >
-            <i class="fa-solid fa-calendar-days fa-fw me-3"></i>
+            <i class="fa-solid fa-outdent fa-fw me-3"></i>
             <span>Phiếu xuất</span>
           </a>
           <!-- @click="printFragment()" -->
@@ -111,13 +111,13 @@
               <input
                 v-model="search"
                 class="form-control form-control-special w-100"
-                placeholder="Tìm kiếm bằng tên bài viết"
+                placeholder="Tìm kiếm bằng tên đơn vị"
               />
             </div>
             <button
               class="btn btn-light w-100"
               data-bs-toggle="modal"
-              data-bs-target="#addContentSourceModal"
+              data-bs-target="#addDVBH"
             >
               Thêm
             </button>
@@ -138,7 +138,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="dvbh in VisibleDVBH()" :key="dvbh.id">
+                  <tr v-for="(dvbh, index) in VisibleDVBH()" :key="dvbh.id">
                     <td>{{ dvbh.id }}</td>
                     <td>{{ dvbh.ten }}</td>
                     <td>{{ dvbh.maSoThue }}</td>
@@ -146,13 +146,26 @@
                     <td>{{ dvbh.sdt }}</td>
                     <td>{{ dvbh.email }}</td>
                     <td>{{ dvbh.taiKhoan }}</td>
+                    <td>
+                      <button
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteDVBH"
+                        @click="
+                          choosenDVBH = dvbh.id;
+                          choosenIndexDVBH = index;
+                        "
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
               <div class="text-center">
                 <button
                   @click="dvbhVisibles += steps"
-                  v-if="dvbhVisibles < posts.length && search == ''"
+                  v-if="dvbhVisibles < dvbhs.length && search == ''"
                   class="btn moreUser"
                   style="
                     border-radius: 50px;
@@ -222,7 +235,7 @@
               <div class="text-center">
                 <button
                   @click="userVisibles += stepsUser"
-                  v-if="userVisibles < users.length && searchUser == ''"
+                  v-if="userVisibles < nds.length && searchUser == ''"
                   class="btn moreUser"
                   style="border-radius: 50px; border: 2px solid black"
                 >
@@ -347,63 +360,7 @@
         role="tabpanel"
         aria-labelledby="eventLog-tab"
         style="width: 80vw; margin-top: 30px"
-      >
-        <div v-if="eventLogs[0].id != 0">
-          <div>
-            <h5>Danh sách hoạt động của toàn hệ thống</h5>
-            <table class="table table-borderless">
-              <thead>
-                <tr class="bg-light">
-                  <th scope="col">Ngày</th>
-                  <th scope="col">Người thực hiện</th>
-                  <th scope="col">Hành động</th>
-                  <th scope="col">Tên bài viết</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="el in VisibleEL()" :key="el.id">
-                  <td>{{ el.createdAt.slice(0, 10) }}</td>
-                  <td>
-                    <img
-                      style="border-radius: 50%; margin-right: 10px"
-                      v-if="el.actor.avatar != null"
-                      :src="
-                        'http://localhost:8080' +
-                        el.actor.avatar.replace('files', '')
-                      "
-                      width="30px"
-                      height="30px"
-                      alt=""
-                    />
-                    {{ el.actor.fullName }}
-                  </td>
-                  <td v-if="el.action == 'create'">Tạo</td>
-                  <td v-if="el.action == 'comment'">Bình luận</td>
-                  <td v-if="el.action == 'share'">Chia sẻ</td>
-                  <td>
-                    <a
-                      v-if="el.post != null"
-                      :href="'http://localhost:5173/post/' + el.post.id"
-                      >{{ el.post.title }}</a
-                    >
-                    <a v-else>Bài viết không tồn tại</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="text-center">
-              <button
-                @click="elVisibles += stepEl"
-                v-if="elVisibles < eventLogs.length"
-                class="btn moreUser"
-                style="border-radius: 50px; border: 2px solid black"
-              >
-                Xem thêm >>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      ></div>
 
       <div
         class="tab-pane fade"
@@ -426,7 +383,7 @@
         <button
           class="btn btn-light w-100"
           data-bs-toggle="modal"
-          data-bs-target="#addContentSourceModal"
+          data-bs-target="#addPBModal"
         >
           Thêm
         </button>
@@ -434,13 +391,27 @@
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Tên</th>
+              <th scope="col" class="w-75">Tên</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="pb in pbs" :key="pb.id">
+            <tr v-for="(pb, index) in pbs" :key="pb.id">
               <th scope="row">{{ pb.id }}</th>
               <td>{{ pb.tenPhongBan }}</td>
+              <td>
+                <button
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDeletePB"
+                  @click="
+                    choosenPB = pb.id;
+                    choosenIndexPB = index;
+                  "
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -674,17 +645,16 @@
   <!-- Confirm delete category -->
   <div
     class="modal fade"
-    id="confirmDeleteContentSourceModal"
+    id="confirmDeleteDVBH"
     tabindex="-1"
-    aria-labelledby="confirmDeleteContentSourceModelLabal"
+    aria-labelledby="confirmDeleteDVBHModelLabal"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="confirmDeleteContentSourceModelLabal">
-            Bạn có chắc chắn muốn xóa nguồn này (tất cả bài viết thuộc người
-            dùng này sẽ bị xóa)
+          <h5 class="modal-title" id="confirmDeleteDVBHModelLabal">
+            Bạn có chắc chắn muốn xóa đơn vị này?
           </h5>
         </div>
         <div class="modal-footer">
@@ -692,7 +662,42 @@
             type="button"
             class="btn btn-danger"
             data-bs-dismiss="modal"
-            @click="deleteContentSource()"
+            @click="deleteDVBH()"
+          >
+            Xóa
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="confirmDeletePB"
+    tabindex="-1"
+    aria-labelledby="confirmDeletePBModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeletePBModelLabal">
+            Bạn có chắc chắn muốn xóa phòng ban này?
+          </h5>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="deletePB()"
           >
             Xóa
           </button>
@@ -755,7 +760,6 @@
     </div>
   </div>
 
-  <!-- add content source modal -->
   <div
     class="modal fade"
     id="addContentSourceModal"
@@ -787,7 +791,138 @@
             type="button"
             class="btn btn-success"
             data-bs-dismiss="modal"
-            @click="addContentSource"
+            @click="addDVBH"
+          >
+            Thêm
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="addPBModal"
+    tabindex="-1"
+    aria-labelledby="addPBModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Thêm phòng ban</h5>
+        </div>
+        <div class="modal-body">
+          <label for="inputAddPb">Tên phòng ban</label>
+          <input
+            id="inputAddPb"
+            type="text"
+            class="form-control"
+            v-model="tenPB"
+            required
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-success"
+            data-bs-dismiss="modal"
+            @click="addPB"
+          >
+            > Thêm
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="addDVBH"
+    tabindex="-1"
+    aria-labelledby="addDVBHModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Thêm đơn vị bán hàng</h5>
+        </div>
+        <div class="modal-body">
+          <label for="inputNameDVBH">Tên đơn vị bán hàng</label>
+          <input
+            v-model="dvbhForm.ten"
+            id="inputNameDVBH"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <label for="inputNameMST">Mã số thuế</label>
+          <input
+            v-model="dvbhForm.maSoThue"
+            id="inputNameMST"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <label for="inputNameDiaChiDonVi">Địa chỉ</label>
+          <input
+            v-model="dvbhForm.diaChi"
+            id="inputNameDiaChiDonVi"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <label for="inputNameSDTDonVi">SDT</label>
+          <input
+            v-model="dvbhForm.sdt"
+            id="inputNameSDTDonVi"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <label for="inputNameEmailDonVi">Email</label>
+          <input
+            v-model="dvbhForm.email"
+            id="inputNameEmailDonVi"
+            type="text"
+            class="form-control"
+            required
+          />
+
+          <label for="inputNameSTKDonVi">Số tài khoản</label>
+          <input
+            v-model="dvbhForm.taiKhoan"
+            id="inputNameSTKDonVi"
+            type="text"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-success"
+            data-bs-dismiss="modal"
+            @click="addDVBH"
           >
             Thêm
           </button>
@@ -870,6 +1005,8 @@ import tsServices from "@/services/ts.services";
 import tbttServices from "@/services/tbtt.services";
 import dvbhServices from "@/services/dvbh.services";
 import pnServices from "@/services/pn.services";
+import Swal from "sweetalert2";
+import ltsServices from "@/services/lts.services";
 
 const router = useRouter();
 
@@ -909,12 +1046,21 @@ const pss = ref([
     idPhongBanXuat: null,
   },
 ]);
+
+const tenPB = ref("");
 const pbs = ref([
   {
     id: 0,
     tenPhongBan: "",
   },
 ]);
+const lts = ref([
+  {
+    id: 0,
+    ten: "",
+  },
+]);
+const newLTS = ref("");
 const tbtt = ref([]);
 const nds = ref([
   {
@@ -945,6 +1091,11 @@ const tss = ref([
     hinhAnh: "",
   },
 ]);
+const choosenDVBH = ref(0);
+const choosenIndexDVBH = ref(0);
+
+const choosenPB = ref(0);
+const choosenIndexPB = ref(0);
 const dvbhs = ref([
   {
     id: 0,
@@ -956,6 +1107,14 @@ const dvbhs = ref([
     taiKhoan: "",
   },
 ]);
+const dvbhForm = ref({
+  ten: "",
+  maSoThue: "",
+  diaChi: "",
+  sdt: "",
+  email: "",
+  taiKhoan: "",
+});
 const chooseUserIndex = ref(0);
 const chooseRole = ref("");
 
@@ -982,53 +1141,6 @@ const users = ref([
     birthday: "",
     avatar: "",
     role: "",
-  },
-]);
-
-const posts = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    title: "",
-    content: "",
-    sharePostId: null,
-    originalPostURL: "",
-    publishDate: "",
-    imageURL: "",
-    status: "",
-    type: "",
-    readTime: 0,
-    totalLike: 0,
-    totalDislike: 0,
-    totalShare: 0,
-    categoryId: 0,
-    createdById: 0,
-    contentSourceId: 0,
-    createdBy: {
-      id: 0,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null,
-      email: "",
-      username: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      about: "",
-      youtubeLink: "",
-      facebookLink: "",
-      linkedinLink: "",
-      twitterLink: "",
-      totalFollower: 0,
-      totalFollowee: 0,
-      refreshToken: null,
-      phoneNumber: "",
-      birthday: "",
-      avatar: "",
-      role: "",
-    },
   },
 ]);
 
@@ -1087,13 +1199,6 @@ function VisibleUser() {
 //   }
 // }
 
-var elVisibles = ref(20);
-var stepEl = ref(10);
-
-function VisibleEL() {
-  return eventLogs.value.slice(0, elVisibles.value);
-}
-
 const search = ref("");
 const searchUser = ref("");
 const searchPhieuNhap = ref("");
@@ -1122,70 +1227,37 @@ const categories = ref([
   },
 ]);
 
-const eventLogs = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    action: "",
-    actorId: 0,
-    postId: 0,
-    note: null,
-    actor: {
-      id: 0,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null,
-      email: "",
-      username: "",
-      firstName: "",
-      lastName: "",
-      fullName: "",
-      about: "",
-      youtubeLink: "",
-      facebookLink: "",
-      linkedinLink: "",
-      twitterLink: "",
-      totalFollower: 0,
-      totalFollowee: 0,
-      refreshToken: null,
-      phoneNumber: "",
-      birthday: "",
-      avatar: "",
-      role: "",
-    },
-    post: {
-      id: 0,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null,
-      title: "",
-      content: "",
-      sharePostId: null,
-      originalPostURL: null,
-      publishDate: "",
-      imageURL: "",
-      status: "",
-      type: "",
-      readTime: 0,
-      totalLike: 0,
-      totalDislike: 0,
-      totalShare: 0,
-      categoryId: 0,
-      createdById: 0,
-      contentSourceId: null,
-    },
-  },
-]);
-
 const fragment = ref(null as HTMLElement | null);
 // const printFragment = computed(() =>frame.value.print(fragment.value))
 const choosenContentSourceIndex = ref(0);
 
-async function deleteContentSource() {
+async function deletePB() {
   try {
-    contentSources.value.splice(choosenContentSourceIndex.value, 1);
+    await pbServices.delete(choosenPB.value);
+    pbs.value.splice(choosenIndexPB.value, 1);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Xóa phòng ban thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function deleteDVBH() {
+  try {
+    await dvbhServices.delete(choosenDVBH.value);
+    dvbhs.value.splice(choosenIndexDVBH.value, 1);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Xóa đơn vị thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
   } catch (error) {
     console.log(error);
   }
@@ -1262,9 +1334,19 @@ const fileImageAdd = ref({});
 
 const addContentSourceName = ref("");
 
-async function addContentSource() {
+async function addPB() {
   try {
-    contentSources.value.push();
+    await pbServices.create(tenPB.value);
+    window.location.reload();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function addDVBH() {
+  try {
+    await dvbhServices.create(dvbhForm.value);
+    window.location.reload();
   } catch (error) {
     console.log(error);
   }
@@ -1301,6 +1383,8 @@ onMounted(async () => {
     let respPn = await pnServices.getAll();
     pns.value = respPn.data.pn;
 
+    let respLTS = await ltsServices.getAll();
+    lts.value = respLTS.data.lts;
     // eventlog
   } catch (err) {
     console.log(err);

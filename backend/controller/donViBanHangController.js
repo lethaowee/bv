@@ -82,3 +82,27 @@ exports.create = async (req, res) => {
         });
     }
 };
+
+exports.delete = async (req, res) => {
+    try {
+        connection.query("DELETE FROM donvibanhang WHERE id = ?", req.params.id, (err, row) => {
+            if (err) {
+                console.log(err)
+                res.status(400).json({
+                    errorMessage: err,
+                    status: false
+                });
+            } else
+                res.status(200).json({
+                    status: true,
+                    title: 'Delete Successfully.'
+                });
+        }
+        )
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
+};

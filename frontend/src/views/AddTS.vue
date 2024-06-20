@@ -54,7 +54,25 @@
             class="form-control"
             id="exampleInputName"
             aria-describedby="emailHelp"
+            required
           />
+        </div>
+
+        <div class="mb-3 w-100">
+          <label for="pb" class="form-label">Loại tài sản</label>
+
+          <select
+            v-model="inputTSForm.idLoaiTaiSan"
+            id="pb"
+            class="form-select form-control"
+            aria-label="Default select example"
+            aria-placeholder=""
+            required
+          >
+            <option v-for="l in lts" :value="l.id">
+              {{ l.ten }}
+            </option>
+          </select>
         </div>
 
         <div class="d-flex d-flex justify-content-between">
@@ -65,6 +83,7 @@
               type="date"
               class="form-control"
               id="exampleInputDate"
+              required
             />
           </div>
 
@@ -75,6 +94,7 @@
               type="date"
               class="form-control"
               id="exampleInputHSD"
+              required
             />
           </div>
 
@@ -86,6 +106,7 @@
               type="number"
               class="form-control"
               id="exampleInputCount"
+              required
             />
           </div>
         </div>
@@ -97,6 +118,7 @@
             type="text"
             class="form-control"
             id="exampleInputNum"
+            required
           />
         </div>
 
@@ -109,6 +131,7 @@
               type="text"
               class="form-control"
               id="exampleInputPrice"
+              required
             />
           </div>
 
@@ -119,6 +142,7 @@
               type="text"
               class="form-control"
               id="exampleInputCal"
+              required
             />
           </div>
         </div>
@@ -130,6 +154,7 @@
             type="file"
             class="form-control"
             id="exampleInputImage"
+            required
           />
 
           <img
@@ -156,6 +181,7 @@
               class="form-select form-control"
               aria-label="Default select example"
               aria-placeholder=""
+              required
             >
               <option v-for="dvbh in dvbhs" :value="dvbh.id">
                 {{ dvbh.ten }}
@@ -174,6 +200,7 @@
               type="text"
               class="form-control"
               id="exampleInputPriceWay"
+              required
             />
           </div>
 
@@ -184,6 +211,7 @@
               type="text"
               class="form-control"
               id="exampleInputTax"
+              required
             />
           </div>
           <div class="mb-3 w-25">
@@ -193,6 +221,7 @@
               type="text"
               class="form-control"
               id="exampleInputAddress"
+              required
             />
           </div>
         </div>
@@ -206,6 +235,7 @@
               type="text"
               class="form-control"
               id="exampleInputWay"
+              required
             />
           </div>
 
@@ -218,6 +248,7 @@
               type="text"
               class="form-control"
               id="exampleInputUnit"
+              required
             />
           </div>
         </div>
@@ -268,6 +299,7 @@
 import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 import dvbhServices from "@/services/dvbh.services";
+import ltsServices from "@/services/lts.services";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
 import checkLogin from "@/utilities/utilities";
@@ -299,6 +331,7 @@ const tss = ref([
     donGia: 0,
     donViTinh: "",
     hinhAnh: "",
+    idLoaiTaiSan: 0,
   },
 ]);
 const dvbhs = ref([
@@ -312,7 +345,12 @@ const dvbhs = ref([
     taiKhoan: "",
   },
 ]);
-
+const lts = ref([
+  {
+    id: 0,
+    ten: "",
+  },
+]);
 const inputTSForm = ref({
   ten: "",
   ngayNhap: "",
@@ -323,6 +361,7 @@ const inputTSForm = ref({
   donViTinh: "",
   hinhAnh: "",
   idDonViBanHang: 0,
+  idLoaiTaiSan: 0,
   donViMua: "",
   maSoThue: "",
   diaChi: "",
@@ -368,6 +407,7 @@ function changeChoosen(index: number) {
     inputTSForm.value.donGia = 0;
     inputTSForm.value.donViTinh = "";
     inputTSForm.value.hinhAnh = "";
+    inputTSForm.value.idLoaiTaiSan = 0;
   } else {
     inputTSForm.value.ten = tss.value[index].ten;
     inputTSForm.value.ngayNhap = tss.value[index].ngayNhap;
@@ -377,6 +417,7 @@ function changeChoosen(index: number) {
     inputTSForm.value.donGia = tss.value[index].donGia;
     inputTSForm.value.donViTinh = tss.value[index].donViTinh;
     inputTSForm.value.hinhAnh = tss.value[index].hinhAnh;
+    inputTSForm.value.idLoaiTaiSan = tss.value[index].idLoaiTaiSan;
   }
 }
 
@@ -435,6 +476,8 @@ onMounted(async () => {
     let resp2 = await dvbhServices.getAll();
     dvbhs.value = resp2.data.dvbh;
 
+    let resp3 = await ltsServices.getAll();
+    lts.value = resp3.data.lts;
     inputTSForm.value.donViMua = "Bệnh Viện Đa Khoa Tỉnh Sóc Trăng";
     inputTSForm.value.maSoThue = "2200176300";
     inputTSForm.value.diaChi =

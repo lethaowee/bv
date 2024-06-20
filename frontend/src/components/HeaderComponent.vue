@@ -20,9 +20,18 @@
         <ul
           class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
         >
-          <li><a href="#" class="nav-link px-2 link-dark">Inventory</a></li>
-          <li><a href="#" class="nav-link px-2 link-dark">Customers</a></li>
-          <li><a href="#" class="nav-link px-2 link-dark">Products</a></li>
+          <li>
+            <a href="http://localhost:5173/home" class="nav-link px-2 link-dark"
+              >Trang chủ</a
+            >
+          </li>
+          <li>
+            <a
+              href="http://localhost:5173/managets"
+              class="nav-link px-2 link-dark"
+              >Admin</a
+            >
+          </li>
         </ul>
 
         <div class="dropdown text-end">
@@ -38,6 +47,7 @@
               v-if="currentUser.avatar != null && currentUser.avatar != ''"
               width="30px"
               height="30px"
+              style="border-radius: 50%"
               :src="currentUser.avatar"
               :alt="currentUser.hoTen"
             />

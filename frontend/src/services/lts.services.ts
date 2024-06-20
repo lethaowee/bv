@@ -9,8 +9,8 @@ class DVBHService {
   }
   async getAll() {
     try {
-      const chts = await this.api.get("/donvibanhang");
-      return chts.data;
+      const lts = await this.api.get("/loaitaisan");
+      return lts.data;
     } catch (err) {
       handlingError(err);
     }
@@ -18,8 +18,8 @@ class DVBHService {
 
   async getOne(id: number) {
     try {
-      const chts = await this.api.get("/donvibanhang/" + id);
-      return chts.data;
+      const lts = await this.api.get("/loaitaisan/" + id);
+      return lts.data;
     } catch (err) {
       handlingError(err);
     }
@@ -28,7 +28,7 @@ class DVBHService {
   async create(data: any) {
     try {
       const resp = await this.api.post(
-        "http://localhost:3000/api/donvibanhang",
+        "http://localhost:3000/api/loaitaisan",
         data
       );
       return resp.data;
@@ -39,7 +39,7 @@ class DVBHService {
 
   async delete(id: number) {
     try {
-      return await this.api.delete("/donvibanhang/" + id);
+      return await this.api.delete("/loaitaisan/" + id);
     } catch (err) {
       handlingError(err);
     }
