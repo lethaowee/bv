@@ -59,11 +59,11 @@
         </div>
 
         <div class="mb-3 w-100">
-          <label for="pb" class="form-label">Loại tài sản</label>
+          <label for="lts" class="form-label">Loại tài sản</label>
 
           <select
             v-model="inputTSForm.idLoaiTaiSan"
-            id="pb"
+            id="lts"
             class="form-select form-control"
             aria-label="Default select example"
             aria-placeholder=""
@@ -424,17 +424,21 @@ function changeChoosen(index: number) {
 var onAddingTS = async (e: any) => {
   e.preventDefault();
   try {
-    if (choosenTS.value == -1) {
-      await tsServices.create(inputTSForm.value);
-    } else
+    if (choosenTS.value == -1) await tsServices.create(inputTSForm.value);
+    else
       await tsServices.update({
         id: tss.value[choosenTS.value].id,
         ten: inputTSForm.value.ten,
-        ngayNhap: inputTSForm.value.ngayNhap.slice(0, 10),
+        ngayNhap: inputTSForm.value.ngayNhap.toString().slice(0, 10),
+        hsd: inputTSForm.value.hsd.toString().slice(0, 10),
         soluong: inputTSForm.value.soluong,
+        soLo: inputTSForm.value.soLo,
+        donGia: inputTSForm.value.donGia,
+        donViTinh: inputTSForm.value.donViTinh,
         hinhAnh: inputTSForm.value.hinhAnh,
+        idLoaiTaiSan: inputTSForm.value.idLoaiTaiSan,
       });
-
+    console.log(inputTSForm.value);
     if (choosenTS.value == -1) {
       Swal.fire({
         title: "Thành công!",
@@ -478,6 +482,7 @@ onMounted(async () => {
 
     let resp3 = await ltsServices.getAll();
     lts.value = resp3.data.lts;
+
     inputTSForm.value.donViMua = "Bệnh Viện Đa Khoa Tỉnh Sóc Trăng";
     inputTSForm.value.maSoThue = "2200176300";
     inputTSForm.value.diaChi =

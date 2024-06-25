@@ -82,7 +82,8 @@ CREATE TABLE IF NOT EXISTS PhieuSua (
     ngayTao date not null,
     idTaiSan int NOT NULL,
     idPhongBan int NOT NULL,
-    tinhTrang varchar(255) NOT NULL,
+    tinhTrang varchar(500) NOT NULL,
+    daSua tinyint default 0,
     FOREIGN KEY (idTaiSan) 
       REFERENCES TaiSan (id) 
       ON UPDATE CASCADE 

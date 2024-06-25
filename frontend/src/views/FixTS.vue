@@ -4,23 +4,22 @@
     <div class="text-center">
       <h2>Điền thông tin tài sản cần sửa</h2>
     </div>
-    <form @submit="">
-      <div class="mb-3">
-        <label for="exampleInputName" class="form-label">Tên tài sản</label>
-        <input
-          type="text"
-          class="form-control"
-          id="exampleInputName"
-          aria-describedby="emailHelp"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="exampleInputType" class="form-label">Loại</label>
-        <input
-          type="text                                                                                                                                         "
-          class="form-control"
-          id="exampleInputType"
-        />
+    <form @submit="onAddingPS">
+      <div class="mb-3 w-100">
+        <label for="ts" class="form-label">Tên tài sản</label>
+
+        <select
+          v-model="inputPSForm.idTaiSan"
+          id="ts"
+          class="form-select form-control"
+          aria-label="Default select example"
+          aria-placeholder=""
+          required
+        >
+          <option v-for="l in tss" :value="l.id">
+            {{ l.ten }}
+          </option>
+        </select>
       </div>
 
       <div class="d-flex">
@@ -28,36 +27,40 @@
           <label for="pb" class="form-label">Phòng ban trữ tài sản</label>
 
           <select
+            v-model="inputPSForm.idPhongBan"
             id="pb"
             class="form-select form-control"
             aria-label="Default select example"
             aria-placeholder=""
           >
-            <option></option>
+            <option v-for="room in pbs" :value="room.id">
+              {{ room.tenPhongBan }}
+            </option>
           </select>
         </div>
 
         <div class="mb-3 w-25">
-          <label for="exampleInputDate" class="form-label">Ngày nhập</label>
-          <input type="date" class="form-control" id="exampleInputDate" />
-        </div>
-
-        <div class="mb-3 w-25">
-          <label for="exampleInputCount" class="form-label">Số lượng</label>
-          <input type="number" class="form-control" id="exampleInputCount" />
+          <label for="exampleInputDate" class="form-label">Ngày tạo</label>
+          <input
+            v-model="inputPSForm.ngayTao"
+            type="date"
+            class="form-control"
+            id="exampleInputDate"
+          />
         </div>
       </div>
 
       <div class="mb-3">
         <label for="exampleInputStatus" class="form-label">Tình trạng</label>
-        <input type="text" class="form-control" id="exampleInputStatus" />
+        <textarea
+          v-model="inputPSForm.tinhTrang"
+          class="form-control"
+          id="exampleInputStatus"
+        >
+        </textarea>
       </div>
 
-      <!-- <div class="mb-3 form-check">
-          <input Date="checkbox" class="form-check-input" id="exampleCheck1" />
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div> -->
-      <button type="submit" class="btn btn-primary">Thêm tài sản</button>
+      <button type="submit" class="btn btn-primary">Tạo phiếu sửa</button>
     </form>
   </div>
   <FooterComponent></FooterComponent>
@@ -67,13 +70,22 @@
 <script setup lang="ts">
 import FooterComponent from "@/components/FooterComponent.vue";
 import HeaderComponent from "../components/HeaderComponent.vue";
+import ltsServices from "@/services/lts.services";
 import pbServices from "@/services/pb.services";
 import tsServices from "@/services/ts.services";
 import { onMounted, ref } from "vue";
+import Swal from "sweetalert2";
+import psServices from "@/services/ps.services";
 const pbs = ref([
   {
     id: 0,
     tenPhongBan: "",
+  },
+]);
+const lts = ref([
+  {
+    id: 0,
+    ten: "",
   },
 ]);
 const tss = ref([
@@ -90,12 +102,46 @@ const tss = ref([
   },
 ]);
 
+const inputPSForm = ref({
+  ngayTao: "",
+  idTaiSan: 0,
+  idPhongBan: 0,
+  tinhTrang: "",
+});
+
+var onAddingPS = async (e: any) => {
+  e.preventDefault();
+  try {
+    await psServices.create(inputPSForm.value);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Tạo phiếu sửa thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+
+    window.location.reload();
+  } catch (err: any) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: err,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    console.log(err);
+  }
+};
+
 onMounted(async () => {
   let respPb = await pbServices.getAll();
   pbs.value = respPb.data.pb;
 
   let respTs = await tsServices.getAll();
   tss.value = respTs.data.ts;
+
+  let respLts = await ltsServices.getAll();
+  lts.value = respLts.data.lts;
 });
 </script>
 

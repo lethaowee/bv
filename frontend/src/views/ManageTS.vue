@@ -58,8 +58,8 @@
             class="list-group-item list-group-item-action py-2 ripple"
             aria-current="false"
             data-bs-toggle="tab"
-            data-bs-target="#generatePost"
-            aria-controls="generatePost"
+            data-bs-target="#fixedItem"
+            aria-controls="fixedItem"
           >
             <i class="fa-solid fa-gears fa-fw me-3"></i>
             <span>Phiếu sửa </span>
@@ -72,9 +72,10 @@
             data-bs-target="#-tab"
             aria-controls="-tab"
           >
-            <i class="fa-solid fa-comments me-3"></i>
+            <i class="fa-solid fa-microchip me-3"></i>
             <span>Thiết bị thay thế</span>
           </a>
+
           <a
             href="#"
             class="list-group-item list-group-item-action py-2 ripple"
@@ -83,8 +84,32 @@
             data-bs-target="#feedback-tab"
             aria-controls="feedback-tab"
           >
-            <i class="fa-solid fa-comments me-3"></i>
+            <i class="fa-solid fa-hospital me-3"></i>
             <span>Phòng ban</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action py-2 ripple"
+            aria-current="false"
+            data-bs-toggle="tab"
+            data-bs-target="#taisan-tab"
+            aria-controls="taisan-tab"
+          >
+            <i class="fa-solid fa-desktop me-3"></i>
+            <span>Tài sản</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action py-2 ripple"
+            aria-current="false"
+            data-bs-toggle="tab"
+            data-bs-target="#loaitaisan-tab"
+            aria-controls="loaitaisan-tab"
+          >
+            <i class="fa-solid fa-sitemap me-3"></i>
+            <span>Loại tài sản</span>
           </a>
         </div>
       </div>
@@ -340,9 +365,7 @@
               <div class="text-center">
                 <button
                   @click="pnVisibles += stepsPn"
-                  v-if="
-                    pnVisibles < contentSources.length && searchPhieuNhap == ''
-                  "
+                  v-if="pnVisibles < pns.length && searchPhieuNhap == ''"
                   class="btn moreUser"
                   style="border-radius: 50px; border: 2px solid black"
                 >
@@ -364,12 +387,69 @@
 
       <div
         class="tab-pane fade"
-        id="generatePost"
+        id="fixedItem"
         role="tabpanel"
-        aria-labelledby="generatePost-tab"
+        aria-labelledby="fixedItem-tab"
         style="width: 80vw; margin-top: 30px"
       >
-        <GenerateFormComponent></GenerateFormComponent>
+        <h5>Các phiếu sửa</h5>
+        <button
+          class="btn btn-light w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#addPBModal"
+        >
+          Thêm
+        </button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Ngày tạo</th>
+              <th scope="col">ID</th>
+              <th scope="col">ID tài sản</th>
+              <th scope="col">ID phòng ban</th>
+
+              <th scope="col">Tình trạng</th>
+              <th scope="col">Đã sửa</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(pb, index) in pss" :key="pb.id">
+              <th scope="row">{{ pb.ngayTao.slice(0, 10) }}</th>
+              <td>{{ pb.id }}</td>
+              <td>{{ pb.idTaiSan }}</td>
+              <td>{{ pb.idPhongBan }}</td>
+              <td>{{ pb.tinhTrang }}</td>
+              <td>
+                <div class="form-check form-switch">
+                  <input
+                    @change="updatePs(index)"
+                    v-model="pb.daSua"
+                    :true-value="1"
+                    :false-value="0"
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="flexSwitchCheckChecked"
+                  />
+                </div>
+              </td>
+              <td>
+                <button
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDeletePB"
+                  @click="
+                    choosenPB = pb.id;
+                    choosenIndexPB = index;
+                  "
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div
@@ -407,6 +487,90 @@
                   @click="
                     choosenPB = pb.id;
                     choosenIndexPB = index;
+                  "
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="tab-pane fade"
+        id="taisan-tab"
+        role="tabpanel"
+        aria-labelledby="taisan-tab-tab"
+        style="width: 80vw; margin-top: 30px"
+      >
+        <h5>Các tài sản trong hệ thống</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Ngày nhập</th>
+              <th scope="col">Tên</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col">Đơn giá</th>
+              <th scope="col">ID loại tài sản</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(ts, index) in tss" :key="ts.id">
+              <th scope="row">{{ ts.id }}</th>
+              <td>{{ ts.ngayNhap.slice(0, 10) }}</td>
+              <td>{{ ts.ten }}</td>
+              <td>{{ ts.soluong }}</td>
+              <td>
+                {{
+                  ts.donGia.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })
+                }}
+              </td>
+              <td>{{ ts.idLoaiTaiSan }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="tab-pane fade"
+        id="loaitaisan-tab"
+        role="tabpanel"
+        aria-labelledby="loaitaisan-tab-tab"
+        style="width: 80vw; margin-top: 30px"
+      >
+        <h5>Các loại tài sản trong hệ thống</h5>
+        <button
+          class="btn btn-light w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#addLTSModal"
+        >
+          Thêm
+        </button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col" class="w-75">Tên</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(ts, index) in lts" :key="ts.id">
+              <th scope="row">{{ ts.id }}</th>
+              <td>{{ ts.ten }}</td>
+              <td>
+                <button
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDeleteLTS"
+                  @click="
+                    choosenLTS = ts.id;
+                    choosenIndexLTS = index;
                   "
                 >
                   <i class="fa-solid fa-trash"></i>
@@ -480,169 +644,6 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div
-    class="modal fade"
-    id="confirmDeleteCategoryModal"
-    tabindex="-1"
-    aria-labelledby="confirmDeleteCategoryModelLabal"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="confirmDeleteCategoryModelLabal">
-            Bạn có chắc chắn muốn xóa thể loại này (tất cả bài viết thuộc thể
-            loại sẽ bị xóa)
-          </h5>
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            @click="deleteCategory()"
-          >
-            Xóa
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="updateCategoryModal"
-    tabindex="-1"
-    aria-labelledby="udpateCategoryModelLabal"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="">Chỉnh sửa thể loại</h5>
-        </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            class="form-control"
-            v-model="newCategoryName"
-            required
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            @click="updateCategory"
-          >
-            Cập nhật
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal add tag -->
-  <div
-    class="modal fade"
-    id="addTag"
-    tabindex="-1"
-    aria-labelledby="addTagLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="">Thêm nhãn dán</h5>
-        </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            class="form-control"
-            v-model="newTagName"
-            required
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            @click="addTag"
-          >
-            Thêm
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal add category -->
-  <div
-    class="modal fade"
-    id="addCategory"
-    tabindex="-1"
-    aria-labelledby="addCategoryLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="">Thêm thể loại</h5>
-        </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            class="form-control"
-            v-model="addCategoryName"
-            required
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-            @click="addCategory"
-          >
-            Thêm
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Confirm delete category -->
   <div
     class="modal fade"
     id="confirmDeleteDVBH"
@@ -713,87 +714,28 @@
     </div>
   </div>
 
-  <!-- update content source modal -->
   <div
     class="modal fade"
-    id="updateContentSourceModal"
+    id="confirmDeleteLTS"
     tabindex="-1"
-    aria-labelledby="udpateContentSourceModelLabal"
+    aria-labelledby="confirmDeleteLTSModelLabal"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="">Chỉnh sửa nguồn</h5>
-        </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            class="form-control"
-            v-model="newContentSourceName"
-            required
-          />
-          <input
-            type="file"
-            @change="previewFile($event)"
-            class="form-control"
-          />
+          <h5 class="modal-title" id="confirmDeleteLTSModelLabal">
+            Bạn có chắc chắn muốn xóa loại tài sản này?
+          </h5>
         </div>
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-danger"
             data-bs-dismiss="modal"
-            @click="updateContentSource"
+            @click="deleteLTS()"
           >
-            Cập nhật
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="addContentSourceModal"
-    tabindex="-1"
-    aria-labelledby="addContentSourceModelLabal"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="">Thêm nguồn</h5>
-        </div>
-        <div class="modal-body">
-          <input
-            type="text"
-            class="form-control"
-            v-model="addContentSourceName"
-            required
-          />
-          <input
-            type="file"
-            @change="previewFileAdd($event)"
-            class="form-control"
-            required
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-success"
-            data-bs-dismiss="modal"
-            @click="addDVBH"
-          >
-            Thêm
+            Xóa
           </button>
           <button
             type="button"
@@ -836,7 +778,50 @@
             data-bs-dismiss="modal"
             @click="addPB"
           >
-            > Thêm
+            Thêm
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="addLTSModal"
+    tabindex="-1"
+    aria-labelledby="addLTSModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Thêm loại tài sản</h5>
+        </div>
+        <div class="modal-body">
+          <label for="inputAddPb">Tên loại tài sản</label>
+          <input
+            id="inputAddPb"
+            type="text"
+            class="form-control"
+            v-model="tenLTS"
+            required
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-success"
+            data-bs-dismiss="modal"
+            @click="addLTS"
+          >
+            Thêm
           </button>
           <button
             type="button"
@@ -938,56 +923,6 @@
     </div>
   </div>
 
-  <!-- reject post -->
-  <div
-    class="modal fade"
-    id="rejectPostModal"
-    tabindex="-1"
-    aria-labelledby="rejectPostModalLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="rejectPostModalLabel">
-            Bạn có chắc chắn muốn từ chối bài viết này?
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <label for="reason">Lý do:</label>
-          <input
-            name="reason"
-            type="text"
-            v-model="messageReject"
-            class="form-control"
-          />
-        </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            @click="rejectPost()"
-          >
-            Từ chối
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Hủy
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
   <FooterComponent></FooterComponent>
 </template>
 
@@ -1007,6 +942,7 @@ import dvbhServices from "@/services/dvbh.services";
 import pnServices from "@/services/pn.services";
 import Swal from "sweetalert2";
 import ltsServices from "@/services/lts.services";
+import psServices from "@/services/ps.services";
 
 const router = useRouter();
 
@@ -1037,13 +973,15 @@ const pxs = ref([
     idPhongBanXuat: null,
   },
 ]);
+const checkedInput = ref([]);
 const pss = ref([
   {
     id: 0,
-    loaiPhieu: "",
+    ngayTao: "",
     idTaiSan: 0,
     idPhongBan: 0,
-    idPhongBanXuat: null,
+    tinhTrang: "",
+    daSua: 0,
   },
 ]);
 
@@ -1082,13 +1020,14 @@ const tss = ref([
   {
     id: 0,
     ten: "",
-    loai: "",
     ngayNhap: "",
+    hsd: "",
     soluong: 0,
-    idNguoiDung: 0,
-    idPhongBan: 0,
-    tinhTrang: "",
+    soLo: "",
+    donGia: 0,
+    donViTinh: "",
     hinhAnh: "",
+    idLoaiTaiSan: 0,
   },
 ]);
 const choosenDVBH = ref(0);
@@ -1153,18 +1092,6 @@ var stepsUser = ref(10);
 var pnVisibles = ref(10);
 var stepsPn = ref(10);
 
-const contentSources = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    name: "",
-    avatar: "",
-    posts: [{}],
-  },
-]);
-
 function VisibleDVBH() {
   if (search.value != "") {
     return dvbhs.value.filter((p) => {
@@ -1187,49 +1114,9 @@ function VisibleUser() {
   }
 }
 
-// function VisiblePhieuNhap() {
-//   if (searchPhieuNhap.value != "") {
-//     return pns.value.filter((cs) => {
-//       return (
-//         cs.name.toLowerCase().indexOf(searchPhieuNhap.value.toLowerCase()) != -1
-//       );
-//     });
-//   } else {
-//     return pns.value.slice(0, pnVisibles.value);
-//   }
-// }
-
 const search = ref("");
 const searchUser = ref("");
 const searchPhieuNhap = ref("");
-
-const tags = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    name: "",
-    categoryId: 0,
-    createdById: 0,
-    posts: [],
-  },
-]);
-
-const categories = ref([
-  {
-    id: 0,
-    createdAt: "",
-    updatedAt: "",
-    deletedAt: null,
-    name: "",
-    imageURL: "",
-  },
-]);
-
-const fragment = ref(null as HTMLElement | null);
-// const printFragment = computed(() =>frame.value.print(fragment.value))
-const choosenContentSourceIndex = ref(0);
 
 async function deletePB() {
   try {
@@ -1239,6 +1126,24 @@ async function deletePB() {
     Swal.fire({
       title: "Thành công!",
       text: "Xóa phòng ban thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const choosenLTS = ref(0);
+const choosenIndexLTS = ref(0);
+async function deleteLTS() {
+  try {
+    await ltsServices.delete(choosenLTS.value);
+    lts.value.splice(choosenIndexLTS.value, 1);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Xóa loại tài sản thành công!",
       icon: "success",
       confirmButtonText: "OK",
     });
@@ -1263,26 +1168,6 @@ async function deleteDVBH() {
   }
 }
 
-const newTagName = ref("");
-
-async function addTag() {
-  try {
-    tags.value.push();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const addCategoryName = ref("");
-
-async function addCategory() {
-  try {
-    categories.value.push();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function updateUser() {
   try {
     users.value[chooseUserIndex.value].role = chooseRole.value;
@@ -1291,52 +1176,20 @@ async function updateUser() {
   }
 }
 
-const choosenCategoryIndex = ref(0);
-
-async function deleteCategory() {
-  try {
-    categories.value.splice(choosenCategoryIndex.value, 1);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const newCategoryName = ref("");
-
-async function updateCategory() {
-  try {
-    categories.value[choosenCategoryIndex.value].name = newCategoryName.value;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function previewFile(e: any) {
-  fileImage.value = e.target.files[0];
-}
-const fileImage = ref({});
-
-const newContentSourceName = ref("");
-
-async function updateContentSource() {
-  try {
-    contentSources.value[choosenContentSourceIndex.value].name =
-      newContentSourceName.value;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function previewFileAdd(e: any) {
-  fileImageAdd.value = e.target.files[0];
-}
-const fileImageAdd = ref({});
-
-const addContentSourceName = ref("");
-
 async function addPB() {
   try {
     await pbServices.create(tenPB.value);
+    window.location.reload();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const tenLTS = ref("");
+
+async function addLTS() {
+  try {
+    await ltsServices.create(tenLTS.value);
     window.location.reload();
   } catch (error) {
     console.log(error);
@@ -1352,12 +1205,24 @@ async function addDVBH() {
   }
 }
 
-const messageReject = ref("");
-async function rejectPost() {
+async function updatePs(index: number) {
   try {
-    window.location.reload();
-  } catch (error) {
-    console.log(error);
+    await psServices.update(pss.value[index]);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Cập nhật phiếu sửa thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  } catch (err: any) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: err,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    console.log(err);
   }
 }
 
@@ -1382,6 +1247,9 @@ onMounted(async () => {
 
     let respPn = await pnServices.getAll();
     pns.value = respPn.data.pn;
+
+    let respPs = await psServices.getAll();
+    pss.value = respPs.data.ps;
 
     let respLTS = await ltsServices.getAll();
     lts.value = respLTS.data.lts;

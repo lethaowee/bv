@@ -43,7 +43,7 @@ class TSService {
         "http://localhost:3000/api/taisan",
         data
       );
-      return resp.data;
+      return resp;
     } catch (err: any) {
       handlingError(err);
     }

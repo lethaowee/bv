@@ -113,40 +113,37 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        if (req.body && req.body.id && req.body.ten && req.body.loai && req.body.ngayNhap && req.body.soluong && req.body.idNguoiDung && req.body.idPhongBan && req.body.tinhTrang) {
+        if (req.body && req.body.id && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan) {
 
             const newTS = {
                 'id': req.body.id,
                 'ten': req.body.ten,
-                'loai': req.body.loai,
-                'ngayNhap': req.body.ngayNhap,
+                'ngayNhap': req.body.ngayNhap.toString().slice(0, 10),
+                'hsd': req.body.hsd.toString().slice(0, 10),
                 'soluong': req.body.soluong,
-                'idNguoiDung': req.body.idNguoiDung,
-                'idPhongBan': req.body.idPhongBan,
-                'tinhTrang': req.body.tinhTrang,
+                'soLo': req.body.soLo,
+                'donGia': req.body.donGia,
+                'donViTinh': req.body.donViTinh,
                 'hinhAnh': req.body.hinhAnh,
                 'idLoaiTaiSan': req.body.idLoaiTaiSan
             }
 
             let sql = `UPDATE taisan SET 
                 ten = '${newTS.ten}', 
-                loai = '${newTS.loai}', 
                 ngayNhap = '${newTS.ngayNhap}', 
-                soluong = '${newTS.soluong}', 
-                idNguoiDung = '${newTS.idNguoiDung}', 
-                idPhongBan = '${newTS.idPhongBan}', 
-                tinhTrang = '${newTS.tinhTrang}', 
+                hsd = '${newTS.hsd}', 
+                soluong = ${newTS.soluong}, 
+                soLo = '${newTS.soLo}', 
+                donGia = ${newTS.donGia}, 
+                donViTinh = '${newTS.donViTinh}', 
                 hinhAnh = '${newTS.hinhAnh}',
-                idLoaiTaiSan = '${newTS.idLoaiTaiSan}',
-            WHERE id = '${newTS.id}'`
+                idLoaiTaiSan = ${newTS.idLoaiTaiSan}
+            WHERE id = ${newTS.id}`
 
             connection.query(sql, (err, row) => {
                 if (err) {
                     console.log(err)
-                    res.status(400).json({
-                        errorMessage: err,
-                        status: false
-                    });
+                    return;
                 } else
                     res.status(200).json({
                         status: true,
@@ -161,7 +158,8 @@ exports.update = async (req, res) => {
             });
         }
     } catch (err) {
-        res.status(404).json({
+        console.log(err)
+        res.status(500).json({
             status: 'fail',
             message: err,
         });

@@ -25,11 +25,11 @@ class DVBHService {
     }
   }
 
-  async create(data: any) {
+  async create(ten: string) {
     try {
       const resp = await this.api.post(
         "http://localhost:3000/api/loaitaisan",
-        data
+        ten
       );
       return resp.data;
     } catch (err: any) {
