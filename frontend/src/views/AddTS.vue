@@ -122,6 +122,24 @@
           />
         </div>
 
+        <div class="mb-3">
+          <label for="idPhongBan" class="form-label"
+            >Phòng ban trữ tài sản</label
+          >
+          <select
+            v-model="inputTSForm.idPhongBan"
+            id="idPhongBan"
+            class="form-select form-control"
+            aria-label="Default select example"
+            aria-placeholder=""
+            required
+          >
+            <option v-for="p in pb" :value="p.id">
+              {{ p.tenPhongBan }}
+            </option>
+          </select>
+        </div>
+
         <div class="d-flex">
           <div class="mb-3 w-50">
             <label for="exampleInputPrice" class="form-label">Đơn giá</label>
@@ -167,128 +185,132 @@
           />
         </div>
 
-        <div class="text-center">
-          <h3>Điền các thông tin của phiếu nhập tài sản</h3>
-        </div>
-
-        <div class="d-flex">
-          <div class="mb-3 w-100">
-            <label for="pb" class="form-label">Đơn vị bán hàng</label>
-
-            <select
-              v-model="inputTSForm.idDonViBanHang"
-              id="pb"
-              class="form-select form-control"
-              aria-label="Default select example"
-              aria-placeholder=""
-              required
-            >
-              <option v-for="dvbh in dvbhs" :value="dvbh.id">
-                {{ dvbh.ten }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="d-flex">
-          <div class="mb-3 w-50">
-            <label for="exampleInputPriceWay" class="form-label"
-              >Đơn vị mua</label
-            >
-            <input
-              v-model="inputTSForm.donViMua"
-              type="text"
-              class="form-control"
-              id="exampleInputPriceWay"
-              required
-            />
+        <div v-if="choosenTS == -1">
+          <div class="text-center">
+            <h3>Điền các thông tin của phiếu nhập tài sản</h3>
           </div>
 
-          <div class="mb-3 w-25">
-            <label for="exampleInputTax" class="form-label">Mã số thuế</label>
-            <input
-              v-model="inputTSForm.maSoThue"
-              type="text"
-              class="form-control"
-              id="exampleInputTax"
-              required
-            />
-          </div>
-          <div class="mb-3 w-25">
-            <label for="exampleInputAddress" class="form-label">Địa chỉ</label>
-            <input
-              v-model="inputTSForm.diaChi"
-              type="text"
-              class="form-control"
-              id="exampleInputAddress"
-              required
-            />
-          </div>
-        </div>
-        <div class="d-flex">
-          <div class="mb-3 w-50">
-            <label for="exampleInputWay" class="form-label"
-              >Hình thức thanh toán</label
-            >
-            <input
-              v-model="inputTSForm.hinhThucThanhToan"
-              type="text"
-              class="form-control"
-              id="exampleInputWay"
-              required
-            />
+          <div class="d-flex">
+            <div class="mb-3 w-100">
+              <label for="pb" class="form-label">Đơn vị bán hàng</label>
+
+              <select
+                v-model="inputTSForm.idDonViBanHang"
+                id="pb"
+                class="form-select form-control"
+                aria-label="Default select example"
+                aria-placeholder=""
+                required
+              >
+                <option v-for="dvbh in dvbhs" :value="dvbh.id">
+                  {{ dvbh.ten }}
+                </option>
+              </select>
+            </div>
           </div>
 
-          <div class="mb-3 w-50">
-            <label for="exampleInputUnit" class="form-label"
-              >Đơn vị tiền tệ</label
-            >
-            <input
-              v-model="inputTSForm.donViTienTe"
-              type="text"
-              class="form-control"
-              id="exampleInputUnit"
-              required
-            />
+          <div class="d-flex">
+            <div class="mb-3 w-50">
+              <label for="exampleInputPriceWay" class="form-label"
+                >Đơn vị mua</label
+              >
+              <input
+                v-model="inputTSForm.donViMua"
+                type="text"
+                class="form-control"
+                id="exampleInputPriceWay"
+                required
+              />
+            </div>
+
+            <div class="mb-3 w-25">
+              <label for="exampleInputTax" class="form-label">Mã số thuế</label>
+              <input
+                v-model="inputTSForm.maSoThue"
+                type="text"
+                class="form-control"
+                id="exampleInputTax"
+                required
+              />
+            </div>
+            <div class="mb-3 w-25">
+              <label for="exampleInputAddress" class="form-label"
+                >Địa chỉ</label
+              >
+              <input
+                v-model="inputTSForm.diaChi"
+                type="text"
+                class="form-control"
+                id="exampleInputAddress"
+                required
+              />
+            </div>
           </div>
-        </div>
-        <div class="text-end">
-          <div class="fw-bold">
-            Thành tiền = Số lượng x Đơn giá =
-            {{
-              inputTSForm.thanhTien.toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })
-            }}
+          <div class="d-flex">
+            <div class="mb-3 w-50">
+              <label for="exampleInputWay" class="form-label"
+                >Hình thức thanh toán</label
+              >
+              <input
+                v-model="inputTSForm.hinhThucThanhToan"
+                type="text"
+                class="form-control"
+                id="exampleInputWay"
+                required
+              />
+            </div>
+
+            <div class="mb-3 w-50">
+              <label for="exampleInputUnit" class="form-label"
+                >Đơn vị tiền tệ</label
+              >
+              <input
+                v-model="inputTSForm.donViTienTe"
+                type="text"
+                class="form-control"
+                id="exampleInputUnit"
+                required
+              />
+            </div>
           </div>
-          <div class="fw-bold">
-            Thuế = 5% x Thành tiền =
-            {{
-              inputTSForm.tienThue.toLocaleString("it-IT", {
-                style: "currency",
-                currency: "VND",
-              })
-            }}
-          </div>
-          <div class="fw-bold">
-            Tổng tiền thanh toán = Thuế + Thành tiền =
-            <span class="text-danger">
+          <div class="text-end">
+            <div class="fw-bold">
+              Thành tiền = Số lượng x Đơn giá =
               {{
-                inputTSForm.tienThanhToan.toLocaleString("it-IT", {
+                inputTSForm.thanhTien.toLocaleString("it-IT", {
                   style: "currency",
                   currency: "VND",
                 })
               }}
-            </span>
+            </div>
+            <div class="fw-bold">
+              Thuế = 5% x Thành tiền =
+              {{
+                inputTSForm.tienThue.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })
+              }}
+            </div>
+            <div class="fw-bold">
+              Tổng tiền thanh toán = Thuế + Thành tiền =
+              <span class="text-danger">
+                {{
+                  inputTSForm.tienThanhToan.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })
+                }}
+              </span>
+            </div>
           </div>
-          <button v-if="choosenTS == -1" type="submit" class="btn btn-primary">
-            Thêm tài sản
-          </button>
-          <button v-else type="submit" class="btn btn-primary mt-3">
-            Cập nhật tài sản
-          </button>
         </div>
+        <button v-if="choosenTS == -1" type="submit" class="btn btn-primary">
+          Thêm tài sản
+        </button>
+        <button v-else type="submit" class="btn btn-primary mt-3">
+          Cập nhật tài sản
+        </button>
       </form>
     </div>
   </div>
@@ -332,6 +354,7 @@ const tss = ref([
     donViTinh: "",
     hinhAnh: "",
     idLoaiTaiSan: 0,
+    idPhongBan: 0,
   },
 ]);
 const dvbhs = ref([
@@ -370,6 +393,7 @@ const inputTSForm = ref({
   tienThanhToan: 0,
   hinhThucThanhToan: "",
   donViTienTe: "",
+  idPhongBan: 0,
 });
 
 const toBase64 = (file: any) =>
@@ -408,6 +432,7 @@ function changeChoosen(index: number) {
     inputTSForm.value.donViTinh = "";
     inputTSForm.value.hinhAnh = "";
     inputTSForm.value.idLoaiTaiSan = 0;
+    inputTSForm.value.idPhongBan = 0;
   } else {
     inputTSForm.value.ten = tss.value[index].ten;
     inputTSForm.value.ngayNhap = tss.value[index].ngayNhap;
@@ -418,6 +443,7 @@ function changeChoosen(index: number) {
     inputTSForm.value.donViTinh = tss.value[index].donViTinh;
     inputTSForm.value.hinhAnh = tss.value[index].hinhAnh;
     inputTSForm.value.idLoaiTaiSan = tss.value[index].idLoaiTaiSan;
+    inputTSForm.value.idPhongBan = tss.value[index].idPhongBan;
   }
 }
 
@@ -437,6 +463,7 @@ var onAddingTS = async (e: any) => {
         donViTinh: inputTSForm.value.donViTinh,
         hinhAnh: inputTSForm.value.hinhAnh,
         idLoaiTaiSan: inputTSForm.value.idLoaiTaiSan,
+        idPhongBan: inputTSForm.value.idPhongBan,
       });
     console.log(inputTSForm.value);
     if (choosenTS.value == -1) {

@@ -64,17 +64,6 @@
             <i class="fa-solid fa-gears fa-fw me-3"></i>
             <span>Phiếu sửa </span>
           </a>
-          <a
-            href="#"
-            class="list-group-item list-group-item-action py-2 ripple"
-            aria-current="false"
-            data-bs-toggle="tab"
-            data-bs-target="#-tab"
-            aria-controls="-tab"
-          >
-            <i class="fa-solid fa-microchip me-3"></i>
-            <span>Thiết bị thay thế</span>
-          </a>
 
           <a
             href="#"
@@ -110,6 +99,18 @@
           >
             <i class="fa-solid fa-sitemap me-3"></i>
             <span>Loại tài sản</span>
+          </a>
+
+          <a
+            href="#"
+            class="list-group-item list-group-item-action py-2 ripple"
+            aria-current="false"
+            data-bs-toggle="tab"
+            data-bs-target="#tbtt-tab"
+            aria-controls="tbtt-tab"
+          >
+            <i class="fa-solid fa-microchip me-3"></i>
+            <span>Thiết bị thay thế</span>
           </a>
         </div>
       </div>
@@ -436,6 +437,18 @@
               </td>
               <td>
                 <button
+                  class="btn btn-light"
+                  data-bs-toggle="modal"
+                  data-bs-target="#updatePSModal"
+                  style="margin-right: 5px"
+                  @click="
+                    getAllCurrentTbtt(pb.id);
+                    choosenPSTBTT = pb.id;
+                  "
+                >
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button
                   class="btn btn-danger"
                   data-bs-toggle="modal"
                   data-bs-target="#confirmDeletePB"
@@ -580,13 +593,60 @@
           </tbody>
         </table>
       </div>
+
+      <div
+        class="tab-pane fade"
+        id="tbtt-tab"
+        role="tabpanel"
+        aria-labelledby="tbtt-tab-tab"
+        style="width: 80vw; margin-top: 30px"
+      >
+        <h5>Các thiết bị thay thế trong hệ thống</h5>
+        <button
+          class="btn btn-light w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#addTBTTModal"
+        >
+          Thêm
+        </button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col" class="w-75">Tên</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(tbtt, index) in tbtts" :key="tbtt.id">
+              <th scope="row">{{ tbtt.id }}</th>
+              <td>{{ tbtt.ten }}</td>
+              <td>{{ tbtt.soLuong }}</td>
+              <td>
+                <button
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmDeleteTBTT"
+                  @click="
+                    choosenTBTT = tbtt.id;
+                    choosenIndexTBTT = index;
+                  "
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div
-      id="modalUpdateUser"
+      id="updatePSModal"
       class="modal fade"
       tabindex="-8"
-      aria-labelledby="editUserModelLabel"
+      aria-labelledby="updatePSModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered">
@@ -594,7 +654,7 @@
           <div class="modal-header">
             <div id="d-flex flex-column">
               <h5>
-                Cập nhật vai trò của tài khoản
+                Thêm thiết bị thay thế
                 {{ users[chooseUserIndex].username }}
               </h5>
             </div>
@@ -606,36 +666,24 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div class="form-check">
+            <div class="form-check" v-for="tbtt in tbtts">
               <input
-                value="admin"
-                v-model="chooseRole"
+                v-model="checkedTBTTId"
                 class="form-check-input"
-                type="radio"
-                name="flexRadioDefault"
-                id="flexRadioAdmin"
+                type="checkbox"
+                :value="tbtt.id"
+                :id="'flexCheckDefault' + tbtt.id"
               />
-              <label class="form-check-label" for="flexRadioAdmin">
-                Quản trị viên
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                value="member"
-                v-model="chooseRole"
-                class="form-check-input"
-                type="radio"
-                name="flexRadioDefault"
-                id="flexRadioMember"
-                checked
-              />
-              <label class="form-check-label" for="flexRadioMember">
-                Thành viên
+              <label
+                class="form-check-label"
+                :for="'flexCheckDefault' + tbtt.id"
+              >
+                {{ tbtt.ten }}
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary" @click="updateUser()">
+            <button class="btn btn-primary" @click="addPSTbtt()">
               Cập nhật
             </button>
           </div>
@@ -664,6 +712,41 @@
             class="btn btn-danger"
             data-bs-dismiss="modal"
             @click="deleteDVBH()"
+          >
+            Xóa
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="confirmDeleteTBTT"
+    tabindex="-1"
+    aria-labelledby="confirmDeleteTBTTModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteTBTTModelLabal">
+            Bạn có chắc chắn muốn xóa thiết bị thay thế này?
+          </h5>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="deleteTBTT()"
           >
             Xóa
           </button>
@@ -777,6 +860,58 @@
             class="btn btn-success"
             data-bs-dismiss="modal"
             @click="addPB"
+          >
+            Thêm
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="addTBTTModal"
+    tabindex="-1"
+    aria-labelledby="addTBTTModelLabal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Thêm thiết bị thay thế</h5>
+        </div>
+        <div class="modal-body">
+          <label for="inputAddTBTT">Tên thiết bị thay thế</label>
+          <input
+            id="inputAddTBTT"
+            type="text"
+            class="form-control"
+            v-model="tenTBTT"
+            required
+          />
+
+          <label for="inputAddTBTTSL">Số lượng</label>
+          <input
+            id="inputAddTBTTSL"
+            type="number"
+            class="form-control"
+            v-model="soLuongTBTT"
+            required
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-success"
+            data-bs-dismiss="modal"
+            @click="addTBTT"
           >
             Thêm
           </button>
@@ -943,6 +1078,7 @@ import pnServices from "@/services/pn.services";
 import Swal from "sweetalert2";
 import ltsServices from "@/services/lts.services";
 import psServices from "@/services/ps.services";
+import pstbttServices from "@/services/pstbtt.services";
 
 const router = useRouter();
 
@@ -967,10 +1103,10 @@ const pns = ref([
 const pxs = ref([
   {
     id: 0,
-    loaiPhieu: "",
     idTaiSan: 0,
     idPhongBan: 0,
-    idPhongBanXuat: null,
+    soLuong: 0,
+    ngayTao: "",
   },
 ]);
 const checkedInput = ref([]);
@@ -998,8 +1134,7 @@ const lts = ref([
     ten: "",
   },
 ]);
-const newLTS = ref("");
-const tbtt = ref([]);
+
 const nds = ref([
   {
     id: 0,
@@ -1033,6 +1168,11 @@ const tss = ref([
 const choosenDVBH = ref(0);
 const choosenIndexDVBH = ref(0);
 
+const choosenTBTT = ref(0);
+const choosenIndexTBTT = ref(0);
+const tenTBTT = ref("");
+const soLuongTBTT = ref(0);
+
 const choosenPB = ref(0);
 const choosenIndexPB = ref(0);
 const dvbhs = ref([
@@ -1055,7 +1195,6 @@ const dvbhForm = ref({
   taiKhoan: "",
 });
 const chooseUserIndex = ref(0);
-const chooseRole = ref("");
 
 const users = ref([
   {
@@ -1082,7 +1221,20 @@ const users = ref([
     role: "",
   },
 ]);
-
+const tbtts = ref([
+  {
+    id: 0,
+    ten: "",
+    soLuong: 0,
+  },
+]);
+const psTbtt = ref([
+  {
+    id: 0,
+    idPhieuSua: 0,
+    idThietBiThayThe: 0,
+  },
+]);
 var dvbhVisibles = ref(3);
 var steps = ref(3);
 
@@ -1114,6 +1266,7 @@ function VisibleUser() {
   }
 }
 
+const checkedTBTTId = ref([] as number[]);
 const search = ref("");
 const searchUser = ref("");
 const searchPhieuNhap = ref("");
@@ -1134,6 +1287,22 @@ async function deletePB() {
   }
 }
 
+async function deleteTBTT() {
+  try {
+    await tbttServices.delete(choosenTBTT.value);
+    tbtts.value.splice(choosenIndexTBTT.value, 1);
+
+    Swal.fire({
+      title: "Thành công!",
+      text: "Xóa thiết bị thay thế thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+const choosenPSTBTT = ref(0);
 const choosenLTS = ref(0);
 const choosenIndexLTS = ref(0);
 async function deleteLTS() {
@@ -1168,9 +1337,13 @@ async function deleteDVBH() {
   }
 }
 
-async function updateUser() {
+async function addTBTT() {
   try {
-    users.value[chooseUserIndex.value].role = chooseRole.value;
+    await tbttServices.create({
+      ten: tenTBTT.value,
+      soLuong: soLuongTBTT.value,
+    });
+    window.location.reload();
   } catch (error) {
     console.log(error);
   }
@@ -1226,6 +1399,52 @@ async function updatePs(index: number) {
   }
 }
 
+async function addPSTbtt() {
+  try {
+    await pstbttServices.delete(0);
+    for (let i = 0; i < checkedTBTTId.value.length; i++) {
+      await pstbttServices.create({
+        idPhieuSua: choosenPSTBTT.value,
+        idThietBiThayThe: checkedTBTTId.value[i],
+      });
+    }
+    Swal.fire({
+      title: "Thành công!",
+      text: "Cập nhật phiếu sửa thành công!",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+    window.location.reload();
+  } catch (err: any) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: err,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    console.log(err);
+  }
+}
+async function getAllCurrentTbtt(id: number) {
+  try {
+    let respPsTbtt = await pstbttServices.getOne(id);
+    psTbtt.value = respPsTbtt.data.ps_tbtt;
+    checkedTBTTId.value = [];
+
+    if (psTbtt.value != undefined)
+      for (let i = 0; i < psTbtt.value.length; i++) {
+        checkedTBTTId.value[i] = psTbtt.value[i].idThietBiThayThe;
+      }
+  } catch (err: any) {
+    Swal.fire({
+      title: "Lỗi!",
+      text: err,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+    console.log(err);
+  }
+}
 onMounted(async () => {
   try {
     if (!checkLogin()) router.push({ name: "home" });
@@ -1243,7 +1462,7 @@ onMounted(async () => {
     tss.value = respTs.data.ts;
 
     let respTbtt = await tbttServices.getAll();
-    tbtt.value = respTbtt.data.tbtt;
+    tbtts.value = respTbtt.data.tbtt;
 
     let respPn = await pnServices.getAll();
     pns.value = respPn.data.pn;
@@ -1253,7 +1472,6 @@ onMounted(async () => {
 
     let respLTS = await ltsServices.getAll();
     lts.value = respLTS.data.lts;
-    // eventlog
   } catch (err) {
     console.log(err);
   }

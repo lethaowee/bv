@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
                 'idTaiSan': req.body.idTaiSan,
                 'idPhongBan': req.body.idPhongBan,
                 'soLuong': req.body.soLuong,
-                'ngayTao': req.body.ngayTao
+                'ngayTao': req.body.ngayTao.toString().slice(0, 10)
             }
 
             connection.query('INSERT INTO phieuxuat SET ?', newPX, (err, row) => {

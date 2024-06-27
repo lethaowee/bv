@@ -44,7 +44,7 @@ exports.getOneTS = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan) {
+        if (req.body && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan && req.body.idPhongBan) {
 
             const newTS = {
                 'ten': req.body.ten,
@@ -55,7 +55,8 @@ exports.create = async (req, res) => {
                 'donGia': req.body.donGia,
                 'donViTinh': req.body.donViTinh,
                 'hinhAnh': req.body.hinhAnh,
-                'idLoaiTaiSan': req.body.idLoaiTaiSan
+                'idLoaiTaiSan': req.body.idLoaiTaiSan,
+                'idPhongBan': req.body.idPhongBan
             }
 
             connection.query('INSERT INTO taisan SET ?', newTS, (err, row) => {
@@ -113,7 +114,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        if (req.body && req.body.id && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan) {
+        if (req.body && req.body.id && req.body.ten && req.body.ngayNhap && req.body.hsd && req.body.soluong && req.body.soLo && req.body.donGia && req.body.donViTinh && req.body.hinhAnh && req.body.idLoaiTaiSan && req.body.idPhongBan) {
 
             const newTS = {
                 'id': req.body.id,
@@ -125,7 +126,8 @@ exports.update = async (req, res) => {
                 'donGia': req.body.donGia,
                 'donViTinh': req.body.donViTinh,
                 'hinhAnh': req.body.hinhAnh,
-                'idLoaiTaiSan': req.body.idLoaiTaiSan
+                'idLoaiTaiSan': req.body.idLoaiTaiSan,
+                'idPhongBan': req.body.idPhongBan
             }
 
             let sql = `UPDATE taisan SET 
@@ -137,7 +139,8 @@ exports.update = async (req, res) => {
                 donGia = ${newTS.donGia}, 
                 donViTinh = '${newTS.donViTinh}', 
                 hinhAnh = '${newTS.hinhAnh}',
-                idLoaiTaiSan = ${newTS.idLoaiTaiSan}
+                idLoaiTaiSan = ${newTS.idLoaiTaiSan},
+                idPhongBan = ${newTS.idPhongBan}
             WHERE id = ${newTS.id}`
 
             connection.query(sql, (err, row) => {

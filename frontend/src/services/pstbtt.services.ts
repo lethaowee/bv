@@ -1,25 +1,26 @@
 import createApiClient from "./api.service";
 import handlingError from "./api.service";
-import axios from "axios";
 
-class TBTTService {
+class PSTbttService {
   api: any;
+
   constructor(baseUrl = "http://localhost:3000/api") {
     this.api = createApiClient(baseUrl);
   }
+
   async getAll() {
     try {
-      const tbtt = await this.api.get("/thietbithaythe");
-      return tbtt.data;
+      const ps = await this.api.get("/phieusua_tbtt");
+      return ps.data;
     } catch (err) {
       handlingError(err);
     }
   }
 
-  async getOne(id: string) {
+  async getOne(id: number) {
     try {
-      const tbtt = await this.api.get("/thietbithaythe/" + id);
-      return tbtt.data;
+      const ps = await this.api.get("/phieusua_tbtt/" + id);
+      return ps.data;
     } catch (err) {
       handlingError(err);
     }
@@ -28,7 +29,7 @@ class TBTTService {
   async create(data: any) {
     try {
       const resp = await this.api.post(
-        "http://localhost:3000/api/thietbithaythe",
+        "http://localhost:3000/api/phieusua_tbtt",
         data
       );
       return resp.data;
@@ -39,11 +40,11 @@ class TBTTService {
 
   async delete(id: number) {
     try {
-      return await this.api.delete("/thietbithaythe/" + id);
+      return await this.api.delete("/phieusua_tbtt/" + id);
     } catch (err) {
       handlingError(err);
     }
   }
 }
 
-export default new TBTTService();
+export default new PSTbttService();

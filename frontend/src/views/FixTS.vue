@@ -11,6 +11,7 @@
         <select
           v-model="inputPSForm.idTaiSan"
           id="ts"
+          @change="onChangeName($event)"
           class="form-select form-control"
           aria-label="Default select example"
           aria-placeholder=""
@@ -92,13 +93,15 @@ const tss = ref([
   {
     id: 0,
     ten: "",
-    loai: "",
     ngayNhap: "",
+    hsd: "",
     soluong: 0,
-    idNguoiDung: 0,
-    idPhongBan: 0,
-    tinhTrang: "",
+    soLo: "",
+    donGia: 0,
+    donViTinh: "",
     hinhAnh: "",
+    idLoaiTaiSan: 0,
+    idPhongBan: 0,
   },
 ]);
 
@@ -132,6 +135,13 @@ var onAddingPS = async (e: any) => {
     console.log(err);
   }
 };
+
+function onChangeName(event: any) {
+  let tsChoosen = tss.value.find((e) => e.id == event.target.value);
+  if (tsChoosen != undefined) {
+    inputPSForm.value.idPhongBan = tsChoosen.idPhongBan;
+  }
+}
 
 onMounted(async () => {
   let respPb = await pbServices.getAll();

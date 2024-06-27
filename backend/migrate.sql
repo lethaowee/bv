@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS NguoiDung (
     avatar LONGTEXT,
     vaiTro varchar(255) NOT NULL,
     idPhongBan int,
-    
     maNhanVien varchar(45),
     chucVu varchar(255)
 );
@@ -44,16 +43,6 @@ CREATE TABLE IF NOT EXISTS TaiSan (
       REFERENCES LoaiTaiSan (id) 
       ON UPDATE CASCADE 
       ON DELETE CASCADE,
-);
-
-CREATE TABLE IF NOT EXISTS PhanHoi (
-    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    noiDung varchar(255) NOT NULL,
-    idNguoiTao int NOT NULL,
-    FOREIGN KEY (idNguoiTao) 
-      REFERENCES NguoiDung (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS LoaiTaiSan (
@@ -118,25 +107,7 @@ CREATE TABLE IF NOT EXISTS PhieuNhap (
     hinhThucThanhToan varchar(255) not null,
     donViTienTe varchar(255) not null
 );
--- CREATE TABLE IF NOT EXISTS PhieuTaiSan (
---     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
---     loaiPhieu varchar(255) NOT NULL,
---     idTaiSan int NOT NULL,
---     idPhongBan int NOT NULL,
---     idPhongBanXuat int,
---     FOREIGN KEY (idTaiSan) 
---       REFERENCES TaiSan (id) 
---       ON UPDATE CASCADE 
---       ON DELETE CASCADE,
---     FOREIGN KEY (idPhongBan) 
---       REFERENCES PhongBan (id) 
---       ON UPDATE CASCADE 
---       ON DELETE CASCADE,
---     FOREIGN KEY (idPhongBanXuat) 
---       REFERENCES PhongBan (id) 
---       ON UPDATE CASCADE 
---       ON DELETE CASCADE
--- );
+
 CREATE TABLE IF NOT EXISTS CauHinhThongSo (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     cpu varchar(255),
@@ -152,47 +123,26 @@ CREATE TABLE IF NOT EXISTS CauHinhThongSo (
       ON DELETE CASCADE
 );
 
-
 CREATE TABLE IF NOT EXISTS ThietBiThayThe (
     id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
     ten varchar(255) NOT NULL,
-    soLuong int NOT NULL,
-    idPhongBan int NOT NULL,
-    daMua boolean NOT NULL,
-    FOREIGN KEY (idPhongBan) 
-      REFERENCES PhongBan (id) 
+    soLuong int NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS PhieuSua_tbtt (
+  id int PRIMARY KEY NOT null AUTO_INCREMENT,
+  idPhieuSua int not null,
+  idThietBiThayThe int not null,
+  FOREIGN KEY (idPhieuSua) 
+      REFERENCES PhieuSua (id) 
       ON UPDATE CASCADE 
       ON DELETE CASCADE,
-    hinhAnh LONGTEXT
-);
-CREATE TABLE IF NOT EXISTS ThongBao (
-    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    noiDung varchar(255) NOT NULL,
-    idNguoiTao int NOT NULL,
-    idNguoiNhan int NOT NULL,
-    FOREIGN KEY (idNguoiTao) 
-      REFERENCES NguoiDung (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE,
-    FOREIGN KEY (idNguoiNhan) 
-      REFERENCES NguoiDung (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS HoatDong (
-    id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    hanhdong varchar(255),
-    idNguoiTao int NOT NULL,
-    idTaiSan int NOT NULL,
-    FOREIGN KEY (idNguoiTao) 
-      REFERENCES NguoiDung (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE,
-    FOREIGN KEY (idTaiSan) 
-      REFERENCES TaiSan (id) 
-      ON UPDATE CASCADE 
-      ON DELETE CASCADE
-);
+  FOREIGN KEY (idThietBiThayThe) 
+    REFERENCES ThietBiThayThe (id) 
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE
+)
 
 INSERT INTO phongban (tenPhongBan) VALUES ('Hành chánh quản trị');
 INSERT INTO phongban (tenPhongBan) VALUES ('Tài chính kế toán');

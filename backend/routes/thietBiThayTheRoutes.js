@@ -10,6 +10,6 @@ router
 router
   .route('/:id')
   .get(tbttController.getOneTBTT)
-// .delete(tbttController.deleteTBTT);
+  .delete(tbttController.delete);
 
 module.exports = router;

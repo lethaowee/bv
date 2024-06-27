@@ -44,14 +44,11 @@ exports.getOneTBTT = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        if (req.body && req.body.ten && req.body.soLuong && req.body.idPhongBan && req.body.daMua && req.body.hinhAnh) {
+        if (req.body && req.body.ten && req.body.soLuong) {
 
             const newTBTT = {
                 'ten': req.body.ten,
                 'soLuong': req.body.soLuong,
-                'idPhongBan': req.body.idPhongBan,
-                'daMua': req.body.daMua,
-                'hinhAnh': req.body.hinhAnh
             }
 
             connection.query('INSERT INTO thietbithaythe SET ?', newTBTT, (err, row) => {
@@ -74,6 +71,30 @@ exports.create = async (req, res) => {
                 status: false
             });
         }
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
+};
+
+exports.delete = async (req, res) => {
+    try {
+        connection.query("DELETE FROM thietbithaythe WHERE id = ?", req.params.id, (err, row) => {
+            if (err) {
+                console.log(err)
+                res.status(400).json({
+                    errorMessage: err,
+                    status: false
+                });
+            } else
+                res.status(200).json({
+                    status: true,
+                    title: 'Delete Successfully.'
+                });
+        }
+        )
     } catch (err) {
         res.status(404).json({
             status: 'fail',

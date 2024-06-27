@@ -7,7 +7,7 @@ router
     .route('/')
     .get(psController.getAllPS)
     .post(psController.create)
-    .patch(psController.update);
+    .patch(psController.update)
 router
     .route('/:id')
     .get(psController.getOnePS)

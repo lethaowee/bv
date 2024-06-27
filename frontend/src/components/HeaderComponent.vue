@@ -1,39 +1,38 @@
 <template>
   <header class="p-3 mb-3 border-bottom">
     <div class="">
-      <div
-        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
-      >
-        <h5>
-          <a
-            href="/home"
-            class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none"
-          >
-            Bệnh viện đa khoa Sóc Trăng
-            <font-awesome-icon
-              :icon="['fas', 'hospital']"
-              style="margin: 0 20px 0 10px"
-            />
-          </a>
-        </h5>
-
-        <ul
-          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
-        >
-          <li>
-            <a href="http://localhost:5173/home" class="nav-link px-2 link-dark"
-              >Trang chủ</a
-            >
-          </li>
-          <li>
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex">
+          <h5>
             <a
-              href="http://localhost:5173/managets"
-              class="nav-link px-2 link-dark"
-              >Admin</a
+              href="/home"
+              class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none"
             >
-          </li>
-        </ul>
+              Bệnh viện đa khoa Sóc Trăng
+              <font-awesome-icon
+                :icon="['fas', 'hospital']"
+                style="margin: 0 20px 0 10px"
+              />
+            </a>
+          </h5>
 
+          <ul class="nav justify-content-center mb-md-0">
+            <li>
+              <a
+                href="http://localhost:5173/home"
+                class="nav-link px-2 link-dark"
+                >Trang chủ</a
+              >
+            </li>
+            <li>
+              <a
+                href="http://localhost:5173/managets"
+                class="nav-link px-2 link-dark"
+                >Admin</a
+              >
+            </li>
+          </ul>
+        </div>
         <div class="dropdown text-end">
           <a
             style="border-radius: 50px; padding: 10px"
